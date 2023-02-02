@@ -4,7 +4,7 @@ library(tidyverse)
 library(reshape2)
 library(readxl)
 
-ddir <- "/Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 21110/FINAL PROJECT/data"
+ddir <- "/Users/gelkouh/Google Drive (UChicago)/Classes/ECON 21110/data/"
 
 # S&P Capital IQ mine data
 

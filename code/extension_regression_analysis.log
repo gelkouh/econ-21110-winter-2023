@@ -3,7 +3,7 @@
        log:  /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 2111
 > 0/FINAL PROJECT/econ-21110-winter-2023/code/extension_regression_analysis.log
   log type:  text
- opened on:   2 Feb 2023, 00:30:07
+ opened on:   2 Feb 2023, 00:40:32
 
 . 
 . ********************************************************************************************************
@@ -14,7 +14,7 @@
 . * IV
 . ********************************************************************************************************
 . 
-. import delimited "${ddir}data/cleaned/capiq_cleaned.csv", clear
+. import delimited "${ddir}cleaned/capiq_cleaned.csv", clear
 (encoding automatically selected: ISO-8859-1)
 (25 vars, 188,219 obs)
 
@@ -107,5 +107,5 @@ Instrumented: ln_price_per_ton
        log:  /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 2111
 > 0/FINAL PROJECT/econ-21110-winter-2023/code/extension_regression_analysis.log
   log type:  text
- closed on:   2 Feb 2023, 00:30:14
+ closed on:   2 Feb 2023, 00:40:40
 -------------------------------------------------------------------------------------------------------------

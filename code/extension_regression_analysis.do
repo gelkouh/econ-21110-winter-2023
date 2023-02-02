@@ -3,10 +3,11 @@ set more off
 clear all
 
 *set project directory
-global ddir "/Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 21110/FINAL PROJECT/"
+global cdir "/Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 21110/FINAL PROJECT/econ-21110-winter-2023/"
+global ddir "/Users/gelkouh/Google Drive (UChicago)/Classes/ECON 21110/data/"
 
 *output file
-log using "${ddir}econ-21110-winter-2023/code/extension_regression_analysis.log", replace
+log using "${cdir}code/extension_regression_analysis.log", replace
 
 ********************************************************************************************************
 * Extension regression analysis             
@@ -16,7 +17,7 @@ log using "${ddir}econ-21110-winter-2023/code/extension_regression_analysis.log"
 * IV
 ********************************************************************************************************
 
-import delimited "${ddir}data/cleaned/capiq_cleaned.csv", clear
+import delimited "${ddir}cleaned/capiq_cleaned.csv", clear
 replace seam_height_in = "" if seam_height_in == "NA"
 encode seam_height_in, gen(seam_height_in2)
 drop seam_height_in

@@ -1,21 +1,20 @@
 -------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
        log:  /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 2111
-> 0/FINAL PROJECT/econ-21110-winter-2023/code/regression_analysis.log
+> 0/FINAL PROJECT/econ-21110-winter-2023/code/replication.log
   log type:  text
- opened on:   2 Feb 2023, 00:28:58
+ opened on:   2 Feb 2023, 00:40:06
 
 . 
 . ********************************************************************************************************
-. * 
+. * Replication of Burke and Liao (2015)           
 . ********************************************************************************************************
 . 
-. use "${ddir}data/ChinaCoalElasticity.dta", clear
+. use "${ddir}ChinaCoalElasticity.dta", clear
 
 . desc
 
-Contains data from /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECO
-> N 21110/FINAL PROJECT/data/ChinaCoalElasticity.dta
+Contains data from /Users/gelkouh/Google Drive (UChicago)/Classes/ECON 21110/data/ChinaCoalElasticity.dta
  Observations:           744                  
     Variables:            22                  22 Jan 2014 18:25
 -------------------------------------------------------------------------------------------------------------
@@ -59,7 +58,7 @@ Sorted by: province  year
 . log close
       name:  <unnamed>
        log:  /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 2111
-> 0/FINAL PROJECT/econ-21110-winter-2023/code/regression_analysis.log
+> 0/FINAL PROJECT/econ-21110-winter-2023/code/replication.log
   log type:  text
- closed on:   2 Feb 2023, 00:28:58
+ closed on:   2 Feb 2023, 00:40:06
 -------------------------------------------------------------------------------------------------------------
