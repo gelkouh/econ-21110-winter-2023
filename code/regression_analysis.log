@@ -1,0 +1,65 @@
+-------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 2111
+> 0/FINAL PROJECT/econ-21110-winter-2023/code/regression_analysis.log
+  log type:  text
+ opened on:   2 Feb 2023, 00:28:58
+
+. 
+. ********************************************************************************************************
+. * 
+. ********************************************************************************************************
+. 
+. use "${ddir}data/ChinaCoalElasticity.dta", clear
+
+. desc
+
+Contains data from /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECO
+> N 21110/FINAL PROJECT/data/ChinaCoalElasticity.dta
+ Observations:           744                  
+    Variables:            22                  22 Jan 2014 18:25
+-------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-------------------------------------------------------------------------------------------------------------
+province        str14   %14s                  Provincial-level division
+year            int     %9.0g                 Year
+coalconsumption float   %9.0g                 Coal consumption; CEIC (2013) and Statistical Yearbooks 2013
+coalpriceindex  float   %8.0g                 Coal price index; NBS (2012) and provincial Statistical
+                                                Yearbooks
+population      float   %9.0g                 Population (10^4 people); CEIC
+realgdpindex    float   %9.0g                 Index of real GDP in province, = 100 in 1989. CEIC
+nominalgdpindex float   %9.0g                 Nominal GDP index constructed from China National Database,
+                                                Statistical Yearbook
+coalprice_usd~f float   %9.0g                 Price of Australian thermal coal. Source: IMF
+yuanperdollar   float   %9.0g                 Exchange rate, Chinese yuan:USD. Source: WDI
+gdpdeflator_c~a float   %9.0g                 GDP deflator for China (not each province). WDI
+cpi_china       float   %9.0g                 CPI for China (not each province). WDI
+cpi             float   %9.0g                 Consumer price index. NBS (2013)
+secondaryshare  float   %9.0g                 Secondary share of economy (%). NBS (2013)
+gdpnominal      float   %9.0g                 GDP, nominal (10^8 yuan). CEIC
+marketization   float   %9.0g                 Marketization index of Fan et al. (2011)
+industrialrev~e float   %9.0g                 Revenue of Industrial Enterprises. NBS (2013)
+soe_revenue     float   %9.0g                 Revenue of state-owned and state holding enterprises. NBS
+                                                (2013)
+ppi             float   %8.0g                 Industrial producer price index. NBS (2013)
+gasolineprice   float   %9.0g                 Average price for no. 93 gasoline (without lead) in province
+                                                capital city. CEIC
+enterprises_~10 float   %9.0g                 (Energy conservation assignments for enterprises for
+                                                2006-2010)/energy use in 06
+enterprises_~12 float   %9.0g                 (Energy conservation assignments for enterprises for
+                                                2011-2015)/energy use in 11
+retired_tc_perc float   %9.0g                 Retired thermal power capacity (%) in 2006 and after. China
+                                                Electricity Council
+-------------------------------------------------------------------------------------------------------------
+Sorted by: province  year
+
+. 
+. 
+. log close
+      name:  <unnamed>
+       log:  /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 2111
+> 0/FINAL PROJECT/econ-21110-winter-2023/code/regression_analysis.log
+  log type:  text
+ closed on:   2 Feb 2023, 00:28:58
+-------------------------------------------------------------------------------------------------------------

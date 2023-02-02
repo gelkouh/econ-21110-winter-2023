@@ -1,0 +1,111 @@
+-------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 2111
+> 0/FINAL PROJECT/econ-21110-winter-2023/code/extension_regression_analysis.log
+  log type:  text
+ opened on:   2 Feb 2023, 00:30:07
+
+. 
+. ********************************************************************************************************
+. * Extension regression analysis             
+. ********************************************************************************************************
+. 
+. ********************************************************************************************************
+. * IV
+. ********************************************************************************************************
+. 
+. import delimited "${ddir}data/cleaned/capiq_cleaned.csv", clear
+(encoding automatically selected: ISO-8859-1)
+(25 vars, 188,219 obs)
+
+. replace seam_height_in = "" if seam_height_in == "NA"
+(148,412 real changes made)
+
+. encode seam_height_in, gen(seam_height_in2)
+
+. drop seam_height_in
+
+. rename seam_height_in2 seam_height_in
+
+. 
+. egen plant_mine_cluster=group(power_plant key_mine_id)
+
+. reg ln_price_per_ton seam_height_in
+
+      Source |       SS           df       MS      Number of obs   =    39,807
+-------------+----------------------------------   F(1, 39805)     =    296.15
+       Model |  44.3362566         1  44.3362566   Prob > F        =    0.0000
+    Residual |  5959.25298    39,805  .149711166   R-squared       =    0.0074
+-------------+----------------------------------   Adj R-squared   =    0.0074
+       Total |  6003.58924    39,806  .150821214   Root MSE        =    .38693
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0014792    .000086    17.21   0.000     .0013107    .0016477
+         _cons |    3.88454   .0039388   986.21   0.000      3.87682     3.89226
+--------------------------------------------------------------------------------
+
+. ivregress 2sls ln_qty_coal_purch (ln_price_per_ton = seam_height_in)
+
+Instrumental variables 2SLS regression            Number of obs   =     39,807
+                                                  Wald chi2(1)    =      88.24
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =          .
+                                                  Root MSE        =     1.6062
+
+----------------------------------------------------------------------------------
+ln_qty_coal_pu~h | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-----------------+----------------------------------------------------------------
+ln_price_per_ton |   -2.26595   .2412274    -9.39   0.000    -2.738747   -1.793153
+           _cons |   12.01624   .9513234    12.63   0.000     10.15168     13.8808
+----------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: seam_height_in
+
+. ivregress 2sls ln_qty_coal_purch (ln_price_per_ton = seam_height_in), robust
+
+Instrumental variables 2SLS regression            Number of obs   =     39,807
+                                                  Wald chi2(1)    =      93.83
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =          .
+                                                  Root MSE        =     1.6062
+
+----------------------------------------------------------------------------------
+                 |               Robust
+ln_qty_coal_pu~h | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-----------------+----------------------------------------------------------------
+ln_price_per_ton |   -2.26595   .2339261    -9.69   0.000    -2.724437   -1.807463
+           _cons |   12.01624   .9225506    13.03   0.000     10.20807    13.82441
+----------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: seam_height_in
+
+. ivregress 2sls ln_qty_coal_purch (ln_price_per_ton = seam_height_in), cluster(plant_mine_cluster)
+
+Instrumental variables 2SLS regression            Number of obs   =     39,807
+                                                  Wald chi2(1)    =       2.07
+                                                  Prob > chi2     =     0.1501
+                                                  R-squared       =          .
+                                                  Root MSE        =     1.6062
+
+                     (Std. err. adjusted for 1,629 clusters in plant_mine_cluster)
+----------------------------------------------------------------------------------
+                 |               Robust
+ln_qty_coal_pu~h | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-----------------+----------------------------------------------------------------
+ln_price_per_ton |   -2.26595   1.574394    -1.44   0.150    -5.351706     .819806
+           _cons |   12.01624    6.21001     1.93   0.053    -.1551569    24.18764
+----------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: seam_height_in
+
+. 
+. 
+. log close
+      name:  <unnamed>
+       log:  /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 2111
+> 0/FINAL PROJECT/econ-21110-winter-2023/code/extension_regression_analysis.log
+  log type:  text
+ closed on:   2 Feb 2023, 00:30:14
+-------------------------------------------------------------------------------------------------------------
