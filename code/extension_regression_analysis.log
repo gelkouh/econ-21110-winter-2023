@@ -3,7 +3,7 @@
        log:  /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 2111
 > 0/FINAL PROJECT/econ-21110-winter-2023/code/extension_regression_analysis.log
   log type:  text
- opened on:   2 Feb 2023, 00:40:32
+ opened on:   2 Feb 2023, 17:28:56
 
 . 
 . ********************************************************************************************************
@@ -30,6 +30,8 @@
 . 
 . egen plant_mine_cluster=group(power_plant key_mine_id)
 
+. egen fuel_contract_type_group=group(fuel_contract_type)
+
 . reg ln_price_per_ton seam_height_in
 
       Source |       SS           df       MS      Number of obs   =    39,807
@@ -46,59 +48,2413 @@ seam_height_in |   .0014792    .000086    17.21   0.000     .0013107    .0016477
          _cons |    3.88454   .0039388   986.21   0.000      3.87682     3.89226
 --------------------------------------------------------------------------------
 
-. ivregress 2sls ln_qty_coal_purch (ln_price_per_ton = seam_height_in)
+. ivregress 2sls ln_qty_coal_purch i.fuel_contract_type_group (ln_price_per_ton = seam_height_in)
+note: 3.fuel_contract_type_group identifies no observations in the sample.
 
 Instrumental variables 2SLS regression            Number of obs   =     39,807
-                                                  Wald chi2(1)    =      88.24
+                                                  Wald chi2(5)    =    1413.73
                                                   Prob > chi2     =     0.0000
                                                   R-squared       =          .
-                                                  Root MSE        =     1.6062
+                                                  Root MSE        =     1.5739
 
-----------------------------------------------------------------------------------
-ln_qty_coal_pu~h | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
------------------+----------------------------------------------------------------
-ln_price_per_ton |   -2.26595   .2412274    -9.39   0.000    -2.738747   -1.793153
-           _cons |   12.01624   .9513234    12.63   0.000     10.15168     13.8808
-----------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+       ln_qty_coal_purch | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -2.186406   .2371839    -9.22   0.000    -2.651277   -1.721534
+                         |
+fuel_contract_type_group |
+                      2  |  -1.013654   .7879682    -1.29   0.198    -2.558043    .5307352
+                      3  |          0  (empty)
+                      4  |  -2.050613   .2946141    -6.96   0.000    -2.628046    -1.47318
+                      5  |  -.7990677   .0822948    -9.71   0.000    -.9603626   -.6377729
+                      6  |  -.5515747   .0265251   -20.79   0.000     -.603563   -.4995864
+                         |
+                   _cons |   11.81049   .9321933    12.67   0.000     9.983427    13.63756
+------------------------------------------------------------------------------------------
 Instrumented: ln_price_per_ton
- Instruments: seam_height_in
+ Instruments: 2.fuel_contract_type_group 4.fuel_contract_type_group
+              5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
 
-. ivregress 2sls ln_qty_coal_purch (ln_price_per_ton = seam_height_in), robust
+. ivregress 2sls ln_qty_coal_purch i.fuel_contract_type_group (ln_price_per_ton = seam_height_in), robust fir
+> st
+note: 3.fuel_contract_type_group identifies no observations in the sample.
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs = 39,807
+                                                        F(5, 39801)   = 604.13
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.0133
+                                                        Adj R-squared = 0.0131
+                                                        Root MSE      = 0.3858
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      2  |  -.1522382   .0039865   -38.19   0.000    -.1600519   -.1444245
+                      3  |          0  (empty)
+                      4  |  -.2827066    .040765    -6.94   0.000     -.362607   -.2028062
+                      5  |   .1307494   .0185531     7.05   0.000     .0943849    .1671139
+                      6  |   .0679628   .0048124    14.12   0.000     .0585304    .0773951
+                         |
+          seam_height_in |   .0014758   .0000895    16.49   0.000     .0013003    .0016513
+                   _cons |   3.871467   .0043592   888.11   0.000     3.862923    3.880012
+------------------------------------------------------------------------------------------
+
 
 Instrumental variables 2SLS regression            Number of obs   =     39,807
-                                                  Wald chi2(1)    =      93.83
+                                                  Wald chi2(5)    =    1414.58
                                                   Prob > chi2     =     0.0000
                                                   R-squared       =          .
-                                                  Root MSE        =     1.6062
+                                                  Root MSE        =     1.5739
 
-----------------------------------------------------------------------------------
-                 |               Robust
-ln_qty_coal_pu~h | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
------------------+----------------------------------------------------------------
-ln_price_per_ton |   -2.26595   .2339261    -9.69   0.000    -2.724437   -1.807463
-           _cons |   12.01624   .9225506    13.03   0.000     10.20807    13.82441
-----------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -2.186406   .2304761    -9.49   0.000     -2.63813   -1.734681
+                         |
+fuel_contract_type_group |
+                      2  |  -1.013654   .1632437    -6.21   0.000    -1.333606   -.6937024
+                      3  |          0  (empty)
+                      4  |  -2.050613   .3495649    -5.87   0.000    -2.735748   -1.365479
+                      5  |  -.7990677   .0975848    -8.19   0.000    -.9903304   -.6078051
+                      6  |  -.5515747   .0255539   -21.58   0.000    -.6016595   -.5014899
+                         |
+                   _cons |   11.81049   .9059776    13.04   0.000     10.03481    13.58618
+------------------------------------------------------------------------------------------
 Instrumented: ln_price_per_ton
- Instruments: seam_height_in
+ Instruments: 2.fuel_contract_type_group 4.fuel_contract_type_group
+              5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
 
-. ivregress 2sls ln_qty_coal_purch (ln_price_per_ton = seam_height_in), cluster(plant_mine_cluster)
+. ivregress 2sls ln_qty_coal_purch i.fuel_contract_type_group (ln_price_per_ton = seam_height_in), cluster(pl
+> ant_mine_cluster) first
+note: 3.fuel_contract_type_group identifies no observations in the sample.
+
+First-stage regressions
+-----------------------
+
+                                                      Number of obs   = 39,807
+                                                      No. of clusters =  1,629
+                                                      F(5, 39801)     =  59.05
+                                                      Prob > F        = 0.0000
+                                                      R-squared       = 0.0133
+                                                      Adj R-squared   = 0.0131
+                                                      Root MSE        = 0.3858
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      2  |  -.1522382   .0181221    -8.40   0.000     -.187758   -.1167184
+                      3  |          0  (empty)
+                      4  |  -.2827066   .0722528    -3.91   0.000    -.4243238   -.1410894
+                      5  |   .1307494   .0578373     2.26   0.024     .0173869    .2441119
+                      6  |   .0679628    .019908     3.41   0.001     .0289426     .106983
+                         |
+          seam_height_in |   .0014758    .000648     2.28   0.023     .0002057    .0027459
+                   _cons |   3.871467   .0317902   121.78   0.000     3.809158    3.933777
+------------------------------------------------------------------------------------------
+
 
 Instrumental variables 2SLS regression            Number of obs   =     39,807
-                                                  Wald chi2(1)    =       2.07
-                                                  Prob > chi2     =     0.1501
+                                                  Wald chi2(5)    =     137.40
+                                                  Prob > chi2     =     0.0000
                                                   R-squared       =          .
-                                                  Root MSE        =     1.6062
+                                                  Root MSE        =     1.5739
 
-                     (Std. err. adjusted for 1,629 clusters in plant_mine_cluster)
-----------------------------------------------------------------------------------
-                 |               Robust
-ln_qty_coal_pu~h | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
------------------+----------------------------------------------------------------
-ln_price_per_ton |   -2.26595   1.574394    -1.44   0.150    -5.351706     .819806
-           _cons |   12.01624    6.21001     1.93   0.053    -.1551569    24.18764
-----------------------------------------------------------------------------------
+                             (Std. err. adjusted for 1,629 clusters in plant_mine_cluster)
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -2.186406   1.536258    -1.42   0.155    -5.197415    .8246039
+                         |
+fuel_contract_type_group |
+                      2  |  -1.013654   .2652939    -3.82   0.000    -1.533621   -.4936876
+                      3  |          0  (empty)
+                      4  |  -2.050613   .5861709    -3.50   0.000    -3.199487   -.9017396
+                      5  |  -.7990677   .3747845    -2.13   0.033    -1.533632   -.0645036
+                      6  |  -.5515747   .1300152    -4.24   0.000    -.8063998   -.2967496
+                         |
+                   _cons |   11.81049   6.040194     1.96   0.051    -.0280712    23.64906
+------------------------------------------------------------------------------------------
 Instrumented: ln_price_per_ton
- Instruments: seam_height_in
+ Instruments: 2.fuel_contract_type_group 4.fuel_contract_type_group
+              5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
+
+. 
+. reg ln_price_per_ton seam_height_in
+
+      Source |       SS           df       MS      Number of obs   =    39,807
+-------------+----------------------------------   F(1, 39805)     =    296.15
+       Model |  44.3362566         1  44.3362566   Prob > F        =    0.0000
+    Residual |  5959.25298    39,805  .149711166   R-squared       =    0.0074
+-------------+----------------------------------   Adj R-squared   =    0.0074
+       Total |  6003.58924    39,806  .150821214   Root MSE        =    .38693
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0014792    .000086    17.21   0.000     .0013107    .0016477
+         _cons |    3.88454   .0039388   986.21   0.000      3.87682     3.89226
+--------------------------------------------------------------------------------
+
+. local firststageFstat = e(F)
+
+. local nobs = e(N)
+
+. 
+. *twoway (lpolyci ln_price_per_ton seam_height_in)
+. *twoway (lpolyci ln_price_per_ton seam_height_in) (scatter ln_price_per_ton seam_height_in) (lfit ln_price_
+> per_ton seam_height_in)
+. 
+. local nbins = 44
+
+. binscatter ln_price_per_ton seam_height_in, nq(`nbins') ///
+>         ytitle("Price per ton (log)", size(large)) xtitle("Coal seam height (inches)", size(large))  ///
+>         note("Binscatter: `nobs' contracts in `nbins' bins" "First-stage F-statistic: `firststageFstat'", s
+> ize(large))
+warning: nquantiles(44) was specified, but only 23 were generated. see help file under nquantiles() for expla
+> nation.
+
+. 
+. preserve
+
+. * Trimming top and bottom 1 percent of observations
+. summarize ln_price_per_ton, detail
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%      3.05022      -1.771957
+ 5%     3.301745      -1.386294
+10%     3.437208      -.8915981       Obs             188,219
+25%     3.688629      -.7765288       Sum of wgt.     188,219
+
+50%     3.953549                      Mean           3.956941
+                        Largest       Std. dev.      .4032772
+75%     4.234541       5.990739
+90%     4.469809        6.00982       Variance       .1626325
+95%      4.60467       6.376183       Skewness      -.1429029
+99%     4.888016       6.796432       Kurtosis       4.340164
+
+. drop if ln_price_per_ton<r(p1) | ln_price_per_ton>r(p99)
+(3,758 observations deleted)
+
+. summarize seam_height_in, detail
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            2              1
+ 5%            4              1
+10%            5              1       Obs              39,139
+25%            9              1       Sum of wgt.      39,139
+
+50%           47                      Mean           40.07573
+                        Largest       Std. dev.      22.51846
+75%           63             65
+90%           65             65       Variance       507.0812
+95%           65             65       Skewness      -.5589126
+99%           65             65       Kurtosis       1.787504
+
+. drop if seam_height_in<r(p1) | seam_height_in>r(p99)
+(145,607 observations deleted)
+
+. 
+. reg ln_price_per_ton seam_height_in
+
+      Source |       SS           df       MS      Number of obs   =    38,854
+-------------+----------------------------------   F(1, 38852)     =    209.93
+       Model |  27.4657067         1  27.4657067   Prob > F        =    0.0000
+    Residual |  5083.19438    38,852  .130834819   R-squared       =    0.0054
+-------------+----------------------------------   Adj R-squared   =    0.0053
+       Total |  5110.66009    38,853  .131538365   Root MSE        =    .36171
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0011896   .0000821    14.49   0.000     .0010287    .0013505
+         _cons |   3.902304   .0037881  1030.14   0.000     3.894879    3.909729
+--------------------------------------------------------------------------------
+
+. local firststageFstat = e(F)
+
+. local nobs = e(N)
+
+. local nbins = 44
+
+. binscatter ln_price_per_ton seam_height_in, nq(`nbins') ///
+>         ytitle("Price per ton (log)", size(large)) xtitle("Coal seam height (inches)", size(large))  ///
+>         note("Binscatter: `nobs' contracts in `nbins' bins" "First-stage F-statistic: `firststageFstat'", s
+> ize(large))
+warning: nquantiles(44) was specified, but only 25 were generated. see help file under nquantiles() for expla
+> nation.
+
+. graph export "${cdir}output/seam_height_firststage.png", replace
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage.png saved as PNG format
+
+. restore
+
+. 
+. forvalues i = 2003(5)2019 {
+  2.         
+.         local lower_year = `i' - 2
+  3.         local upper_year = `i' + 2
+  4.         
+.         preserve
+  5.         
+.         keep if dlvy_yr >= `lower_year' & dlvy_yr <= `upper_year'
+  6.         
+.         summarize ln_price_per_ton, detail
+  7.         drop if ln_price_per_ton<r(p1) | ln_price_per_ton>r(p99)
+  8.         summarize seam_height_in, detail
+  9.         drop if seam_height_in<r(p1) | seam_height_in>r(p99)
+ 10. 
+.         reg ln_price_per_ton seam_height_in
+ 11.         local firststageFstat = e(F)
+ 12.         local nobs = e(N)
+ 13.         local nbins = 44
+ 14.         binscatter ln_price_per_ton seam_height_in, nq(`nbins') ///
+>                 ytitle("Price per ton (log)", size(large)) xtitle("Coal seam height (inches)", size(large))
+>   ///
+>                 note("Binscatter, `lower_year'-`upper_year': `nobs' contracts in `nbins' bins" "First-stage
+>  F-statistic: `firststageFstat'", size(large))
+ 15.         graph export "${cdir}output/seam_height_firststage_`lower_year'_`upper_year'.png", replace
+ 16.         
+.         restore
+ 17.         
+. }
+(127,200 observations deleted)
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     2.936513      -1.771957
+ 5%     3.158276      -1.386294
+10%     3.264614      -.8915981       Obs              61,019
+25%     3.438814      -.7765288       Sum of wgt.      61,019
+
+50%     3.660737                      Mean           3.652198
+                        Largest       Std. dev.       .319306
+75%     3.852061       4.839847
+90%     4.061649       4.861516       Variance       .1019563
+95%     4.175156       5.072483       Skewness      -.6337064
+99%     4.342246       6.796432       Kurtosis       10.60797
+(1,218 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            1              1
+ 5%            5              1
+10%            5              1       Obs               7,681
+25%           14              1       Sum of wgt.       7,681
+
+50%           43                      Mean           38.95391
+                        Largest       Std. dev.      22.18674
+75%           58             65
+90%           64             65       Variance       492.2515
+95%           64             65       Skewness      -.4977721
+99%           65             65       Kurtosis        1.76335
+(52,120 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     7,681
+-------------+----------------------------------   F(1, 7679)      =     23.59
+       Model |  1.94570919         1  1.94570919   Prob > F        =    0.0000
+    Residual |   633.43115     7,679  .082488755   R-squared       =    0.0031
+-------------+----------------------------------   Adj R-squared   =    0.0029
+       Total |  635.376859     7,680  .082731362   Root MSE        =    .28721
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |  -.0007174   .0001477    -4.86   0.000     -.001007   -.0004278
+         _cons |   3.577575   .0066218   540.27   0.000     3.564594    3.590555
+--------------------------------------------------------------------------------
+warning: nquantiles(44) was specified, but only 26 were generated. see help file under nquantiles() for expla
+> nation.
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2001_2005.png saved as PNG
+    format
+(119,877 observations deleted)
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.212455       .3435897
+ 5%     3.470412       2.154085
+10%     3.606041       2.169054       Obs              68,342
+25%     3.820785       2.170196       Sum of wgt.      68,342
+
+50%     4.084126                      Mean           4.071973
+                        Largest       Std. dev.      .3694695
+75%     4.304335       5.444061
+90%     4.534426        5.44975       Variance       .1365077
+95%     4.676188        5.47353       Skewness      -.0439294
+99%     4.977837       5.495528       Kurtosis       3.512789
+(1,364 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            2              1
+ 5%            5              1
+10%            5              1       Obs              11,711
+25%           15              1       Sum of wgt.      11,711
+
+50%           42                      Mean           39.47485
+                        Largest       Std. dev.      22.17117
+75%           60             65
+90%           64             65       Variance       491.5606
+95%           65             65       Skewness      -.4654666
+99%           65             65       Kurtosis       1.761487
+(55,367 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =    11,611
+-------------+----------------------------------   F(1, 11609)     =     36.72
+       Model |  4.71955488         1  4.71955488   Prob > F        =    0.0000
+    Residual |   1491.9525    11,609  .128516883   R-squared       =    0.0032
+-------------+----------------------------------   Adj R-squared   =    0.0031
+       Total |  1496.67205    11,610  .128912322   Root MSE        =    .35849
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0009175   .0001514     6.06   0.000     .0006207    .0012142
+         _cons |   3.982268   .0068839   578.49   0.000     3.968774    3.995762
+--------------------------------------------------------------------------------
+warning: nquantiles(44) was specified, but only 22 were generated. see help file under nquantiles() for expla
+> nation.
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2006_2010.png saved as PNG
+    format
+(153,144 observations deleted)
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.406848       1.975469
+ 5%     3.708437       2.277267
+10%     3.813748       2.282382       Obs              35,075
+25%     3.971046       2.287472       Sum of wgt.      35,075
+
+50%     4.229312                      Mean           4.214318
+                        Largest       Std. dev.      .3245473
+75%     4.461531       5.339123
+90%      4.60976       5.489392       Variance       .1053309
+95%     4.689419       5.990739       Skewness      -.3310876
+99%     4.875045       6.376183       Kurtosis       3.604442
+(698 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            3              1
+ 5%            4              1
+10%            5              1       Obs               9,905
+25%            9              2       Sum of wgt.       9,905
+
+50%           47                      Mean           39.76739
+                        Largest       Std. dev.      22.27843
+75%           60             65
+90%           64             65       Variance       496.3284
+95%           65             65       Skewness      -.5558341
+99%           65             65       Kurtosis       1.773721
+(24,559 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     9,818
+-------------+----------------------------------   F(1, 9816)      =    505.13
+       Model |  37.8642169         1  37.8642169   Prob > F        =    0.0000
+    Residual |  735.799826     9,816  .074959233   R-squared       =    0.0489
+-------------+----------------------------------   Adj R-squared   =    0.0488
+       Total |  773.664043     9,817  .078808602   Root MSE        =    .27379
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0028115   .0001251    22.48   0.000     .0025663    .0030567
+         _cons |    4.03895   .0057272   705.22   0.000     4.027723    4.050176
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2011_2015.png saved as PNG
+    format
+(170,201 observations deleted)
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.285412       1.913977
+ 5%     3.625673       2.688528
+10%      3.69511       2.739549       Obs              18,018
+25%      3.80644       2.766319       Sum of wgt.      18,018
+
+50%     4.000492                      Mean           4.017527
+                        Largest       Std. dev.      .2800157
+75%     4.242046       4.883938
+90%     4.388878       4.902976       Variance       .0784088
+95%     4.459451       4.910889       Skewness      -.1774538
+99%      4.57275       4.915958       Kurtosis       3.174427
+(360 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            3              1
+ 5%            4              2
+10%            4              2       Obs               8,033
+25%            9              2       Sum of wgt.       8,033
+
+50%           49                      Mean           41.46184
+                        Largest       Std. dev.      23.39103
+75%           63             65
+90%           65             65       Variance       547.1405
+95%           65             65       Skewness       -.683351
+99%           65             65       Kurtosis       1.841285
+(9,671 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     7,987
+-------------+----------------------------------   F(1, 7985)      =     96.93
+       Model |  5.43817615         1  5.43817615   Prob > F        =    0.0000
+    Residual |  447.994048     7,985  .056104452   R-squared       =    0.0120
+-------------+----------------------------------   Adj R-squared   =    0.0119
+       Total |  453.432225     7,986   .05677839   Root MSE        =    .23686
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0011217   .0001139     9.85   0.000     .0008983     .001345
+         _cons |   3.933853    .005439   723.26   0.000     3.923191    3.944515
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2016_2020.png saved as PNG
+    format
+
+. 
+. forvalues i = 2002(1)2021 {
+  2.         
+.         preserve
+  3.         
+.         keep if dlvy_yr == `i'
+  4.         
+.         ivregress 2sls ln_qty_coal_purch i.fuel_contract_type_group (ln_price_per_ton = seam_height_in), ro
+> bust first
+  5.         
+.         summarize ln_price_per_ton, detail
+  6.         drop if ln_price_per_ton<r(p1) | ln_price_per_ton>r(p99)
+  7.         summarize seam_height_in, detail
+  8.         drop if seam_height_in<r(p1) | seam_height_in>r(p99)
+  9. 
+.         reg ln_price_per_ton seam_height_in
+ 10.         local firststageFstat = e(F)
+ 11.         local nobs = e(N)
+ 12.         local nbins = 44
+ 13.         binscatter ln_price_per_ton seam_height_in, nq(`nbins') ///
+>                 ytitle("Price per ton (log)", size(large)) xtitle("Coal seam height (inches)", size(large))
+>   ///
+>                 note("Binscatter, `i': `nobs' contracts in `nbins' bins" "First-stage F-statistic: `firstst
+> ageFstat'", size(large))
+ 14.         graph export "${cdir}output/seam_height_firststage_`i'.png", replace
+ 15.         
+.         restore
+ 16.         
+. }
+(173,915 observations deleted)
+note: 4.fuel_contract_type_group identifies no observations in the sample.
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  1,561
+                                                        F(4, 1556)    = 533.33
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.0220
+                                                        Adj R-squared = 0.0194
+                                                        Root MSE      = 0.2690
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      2  |   .3116017    .009495    32.82   0.000     .2929773     .330226
+                      4  |          0  (empty)
+                      5  |  -.6918575   .0925346    -7.48   0.000    -.8733631   -.5103518
+                      6  |  -.0275016   .0171885    -1.60   0.110    -.0612166    .0062133
+                         |
+          seam_height_in |  -.0002911   .0003248    -0.90   0.370    -.0009282     .000346
+                   _cons |   3.460634   .0167463   206.65   0.000     3.427786    3.493482
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      1,561
+                                                  Wald chi2(4)    =       2.61
+                                                  Prob > chi2     =     0.6242
+                                                  R-squared       =          .
+                                                  Root MSE        =     12.626
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |    46.7209   52.33271     0.89   0.372    -55.84933    149.2911
+                         |
+fuel_contract_type_group |
+                      2  |  -15.27344   16.56429    -0.92   0.356    -47.73886    17.19197
+                      4  |          0  (empty)
+                      5  |     32.655   36.14222     0.90   0.366    -38.18246    103.4925
+                      6  |    .510718   1.610625     0.32   0.751     -2.64605    3.667486
+                         |
+                   _cons |  -157.9925   180.3951    -0.88   0.381    -511.5605    195.5755
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 2.fuel_contract_type_group 5.fuel_contract_type_group
+              6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     2.892037      -.4620354
+ 5%     3.102342      -.4620354
+10%     3.212455       .7178398       Obs              14,304
+25%     3.372455       .7178398       Sum of wgt.      14,304
+
+50%     3.547316                      Mean           3.537004
+                        Largest       Std. dev.      .2703514
+75%     3.730021       4.370839
+90%     3.846738       4.372481       Variance       .0730899
+95%     3.927503       4.373868       Skewness      -1.013125
+99%     4.139637       4.617692       Kurtosis       12.51735
+(286 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            4              4
+ 5%            5              4
+10%            5              4       Obs               1,514
+25%            9              4       Sum of wgt.       1,514
+
+50%           47                      Mean           39.49075
+                        Largest       Std. dev.      22.53549
+75%           58             65
+90%           64             65       Variance       507.8482
+95%           64             65       Skewness      -.5437315
+99%           65             65       Kurtosis       1.694258
+(12,504 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     1,514
+-------------+----------------------------------   F(1, 1512)      =     28.45
+       Model |  1.59111347         1  1.59111347   Prob > F        =    0.0000
+    Residual |  84.5674544     1,512  .055930856   R-squared       =    0.0185
+-------------+----------------------------------   Adj R-squared   =    0.0178
+       Total |  86.1585679     1,513  .056945517   Root MSE        =     .2365
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   -.001439   .0002698    -5.33   0.000    -.0019682   -.0009098
+         _cons |   3.515499   .0122663   286.60   0.000     3.491439     3.53956
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2002.png saved as PNG format
+(173,405 observations deleted)
+note: 4.fuel_contract_type_group identifies no observations in the sample.
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  2,017
+                                                        F(3, 2013)    =   3.42
+                                                        Prob > F      = 0.0167
+                                                        R-squared     = 0.0061
+                                                        Adj R-squared = 0.0046
+                                                        Root MSE      = 0.2753
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      4  |          0  (empty)
+                      5  |  -.2371742   .1088893    -2.18   0.030    -.4507217   -.0236267
+                      6  |   .0308448   .0151028     2.04   0.041      .001226    .0604635
+                         |
+          seam_height_in |   .0003329   .0003013     1.10   0.269     -.000258    .0009237
+                   _cons |   3.435784   .0156476   219.57   0.000     3.405096    3.466471
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      2,017
+                                                  Wald chi2(3)    =       1.29
+                                                  Prob > chi2     =     0.7311
+                                                  R-squared       =          .
+                                                  Root MSE        =     10.971
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -39.61363   35.82022    -1.11   0.269      -109.82    30.59271
+                         |
+fuel_contract_type_group |
+                      4  |          0  (empty)
+                      5  |  -9.314782   9.434732    -0.99   0.324    -27.80652    9.176953
+                      6  |   1.053673   1.246221     0.85   0.398    -1.388876    3.496222
+                         |
+                   _cons |   139.4134    123.634     1.13   0.259    -102.9047    381.7316
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%      2.91398      -.8915981
+ 5%     3.142427       .9707789
+10%     3.245713       1.156881       Obs              14,814
+25%     3.397858        1.18479       Sum of wgt.      14,814
+
+50%     3.579065                      Mean           3.558899
+                        Largest       Std. dev.      .2582534
+75%     3.733853       4.800819
+90%     3.834926       4.817859       Variance       .0666948
+95%     3.900558       4.861516       Skewness       -.720668
+99%     4.099498       6.796432       Kurtosis       14.53145
+(295 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            4              4
+ 5%            5              4
+10%            5              4       Obs               1,911
+25%           28              4       Sum of wgt.       1,911
+
+50%           44                      Mean           41.14547
+                        Largest       Std. dev.      20.97265
+75%           58             65
+90%           64             65       Variance       439.8521
+95%           65             65       Skewness      -.6272646
+99%           65             65       Kurtosis        2.02421
+(12,608 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     1,911
+-------------+----------------------------------   F(1, 1909)      =      3.11
+       Model |  .146171892         1  .146171892   Prob > F        =    0.0777
+    Residual |  89.5876629     1,909  .046929106   R-squared       =    0.0016
+-------------+----------------------------------   Adj R-squared   =    0.0011
+       Total |  89.7338347     1,910  .046981065   Root MSE        =    .21663
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0004171   .0002363     1.76   0.078    -.0000464    .0008806
+         _cons |   3.442692   .0109145   315.42   0.000     3.421286    3.464097
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2003.png saved as PNG format
+(172,377 observations deleted)
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  2,200
+                                                        F(4, 2195)    =  89.51
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.1512
+                                                        Adj R-squared = 0.1496
+                                                        Root MSE      = 0.2973
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      4  |  -.0551846   .0441567    -1.25   0.212    -.1417778    .0314086
+                      5  |   .1997888   .0621552     3.21   0.001     .0778996     .321678
+                      6  |   .3015006   .0162096    18.60   0.000     .2697129    .3332884
+                         |
+          seam_height_in |   .0002163   .0002921     0.74   0.459    -.0003565    .0007892
+                   _cons |   3.448753   .0153012   225.39   0.000     3.418746    3.478759
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      2,200
+                                                  Wald chi2(4)    =       1.00
+                                                  Prob > chi2     =     0.9092
+                                                  R-squared       =          .
+                                                  Root MSE        =     13.426
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -45.25237   60.87911    -0.74   0.457    -164.5732    74.06849
+                         |
+fuel_contract_type_group |
+                      4  |  -3.524092   3.824581    -0.92   0.357    -11.02013    3.971949
+                      5  |   8.049384   12.05966     0.67   0.504    -15.58712    31.68589
+                      6  |   13.37357   18.32814     0.73   0.466    -22.54891    49.29606
+                         |
+                   _cons |   159.2702    210.574     0.76   0.449    -253.4473    571.9877
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 4.fuel_contract_type_group 5.fuel_contract_type_group
+              6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     2.950735      -1.386294
+ 5%     3.171365      -.7765288
+10%      3.27903      -.5276327       Obs              15,842
+25%     3.464798      -.4307829       Sum of wgt.      15,842
+
+50%     3.695855                      Mean           3.668971
+                        Largest       Std. dev.      .3158844
+75%     3.881151        4.70962
+90%     4.035479       4.728272       Variance        .099783
+95%     4.153399       4.765501       Skewness       -1.39422
+99%     4.308111       4.810313       Kurtosis       18.04625
+(315 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            1              1
+ 5%            5              1
+10%            5              1       Obs               2,136
+25%           31              1       Sum of wgt.       2,136
+
+50%           47                      Mean           41.82257
+                        Largest       Std. dev.      21.58434
+75%           61             65
+90%           64             65       Variance       465.8837
+95%           64             65       Skewness      -.6929983
+99%           65             65       Kurtosis       2.051509
+(13,391 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     2,136
+-------------+----------------------------------   F(1, 2134)      =      2.91
+       Model |  .229987036         1  .229987036   Prob > F        =    0.0883
+    Residual |  168.833853     2,134  .079116145   R-squared       =    0.0014
+-------------+----------------------------------   Adj R-squared   =    0.0009
+       Total |   169.06384     2,135   .07918681   Root MSE        =    .28128
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0004809    .000282     1.70   0.088    -.0000722    .0010339
+         _cons |   3.521375   .0132728   265.31   0.000     3.495346    3.547404
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2004.png saved as PNG format
+(172,160 observations deleted)
+note: 3.fuel_contract_type_group identifies no observations in the sample.
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  2,213
+                                                        F(4, 2208)    =  94.46
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.1454
+                                                        Adj R-squared = 0.1439
+                                                        Root MSE      = 0.3377
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      3  |          0  (empty)
+                      4  |   .0959024      .0422     2.27   0.023     .0131466    .1786582
+                      5  |   .1790266   .0463719     3.86   0.000     .0880894    .2699637
+                      6  |   .3239579   .0167535    19.34   0.000     .2911037    .3568122
+                         |
+          seam_height_in |   .0014173   .0003107     4.56   0.000     .0008081    .0020265
+                   _cons |   3.557797    .015232   233.57   0.000     3.527926    3.587667
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      2,213
+                                                  Wald chi2(4)    =      38.02
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =          .
+                                                  Root MSE        =     1.5841
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -3.008163    .989996    -3.04   0.002     -4.94852   -1.067807
+                         |
+fuel_contract_type_group |
+                      3  |          0  (empty)
+                      4  |  -1.014157   .7115768    -1.43   0.154    -2.408822    .3805076
+                      5  |   .1055227   .3157659     0.33   0.738     -.513367    .7244125
+                      6  |   .6029973   .3271818     1.84   0.065    -.0382672    1.244262
+                         |
+                   _cons |   13.80608    3.56859     3.87   0.000      6.81177    20.80039
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 4.fuel_contract_type_group 5.fuel_contract_type_group
+              6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     2.963209      -1.771957
+ 5%       3.2312       1.551809
+10%     3.371425       1.702928       Obs              16,059
+25%     3.611728       1.711995       Sum of wgt.      16,059
+
+50%     3.863463                      Mean           3.824321
+                        Largest       Std. dev.      .3355627
+75%     4.071417       4.757118
+90%     4.217152       4.760977       Variance       .1126023
+95%     4.293878       4.839847       Skewness      -.8504642
+99%     4.414131       5.072483       Kurtosis       8.316834
+(319 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            1              1
+ 5%            1              1
+10%            4              1       Obs               2,139
+25%            8              1       Sum of wgt.       2,139
+
+50%           39                      Mean           33.53109
+                        Largest       Std. dev.      22.63482
+75%           55             65
+90%           63             65       Variance       512.3352
+95%           64             65       Skewness      -.1623177
+99%           65             65       Kurtosis       1.536675
+(13,601 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     2,139
+-------------+----------------------------------   F(1, 2137)      =      0.27
+       Model |  .029435655         1  .029435655   Prob > F        =    0.6015
+    Residual |  230.608297     2,137  .107912165   R-squared       =    0.0001
+-------------+----------------------------------   Adj R-squared   =   -0.0003
+       Total |  230.637733     2,138   .10787546   Root MSE        =     .3285
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |  -.0001639   .0003139    -0.52   0.602    -.0007795    .0004516
+         _cons |   3.717737   .0126971   292.80   0.000     3.692837    3.742636
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2005.png saved as PNG format
+(172,809 observations deleted)
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  2,174
+                                                        F(4, 2169)    =  54.80
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.0695
+                                                        Adj R-squared = 0.0677
+                                                        Root MSE      = 0.3281
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      4  |    .006955   .0125221     0.56   0.579    -.0176016    .0315116
+                      5  |   .1858371   .0375457     4.95   0.000     .1122077    .2594664
+                      6  |   .2035029    .014884    13.67   0.000     .1743145    .2326913
+                         |
+          seam_height_in |   .0014455   .0003188     4.53   0.000     .0008203    .0020708
+                   _cons |   3.702677   .0168301   220.00   0.000     3.669672    3.735682
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      2,174
+                                                  Wald chi2(4)    =      50.35
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =          .
+                                                  Root MSE        =     1.8101
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -3.945536   1.210825    -3.26   0.001     -6.31871   -1.572363
+                         |
+fuel_contract_type_group |
+                      4  |  -1.959771   .5962335    -3.29   0.001    -3.128367   -.7911747
+                      5  |   .5042432   .2783973     1.81   0.070    -.0414055    1.049892
+                      6  |   .3270123   .2633035     1.24   0.214    -.1890531    .8430777
+                         |
+                   _cons |   17.84439   4.554557     3.92   0.000     8.917618    26.77115
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 4.fuel_contract_type_group 5.fuel_contract_type_group
+              6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.044046       .3435897
+ 5%     3.330775       2.184927
+10%     3.478467       2.297573       Obs              15,410
+25%     3.689629       2.331172       Sum of wgt.      15,410
+
+50%     3.964995                      Mean           3.905378
+                        Largest       Std. dev.      .3199521
+75%     4.148675        4.70953
+90%     4.275276        4.70953       Variance       .1023694
+95%     4.336768       4.771786       Skewness      -.7470987
+99%     4.433314        5.21792       Kurtosis       4.334969
+(308 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            4              1
+ 5%            5              3
+10%            5              3       Obs               2,124
+25%           24              3       Sum of wgt.       2,124
+
+50%           44                      Mean           40.29284
+                        Largest       Std. dev.      21.92942
+75%           63             65
+90%           65             65       Variance       480.8996
+95%           65             65       Skewness      -.4917279
+99%           65             65       Kurtosis       1.820576
+(12,982 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     2,120
+-------------+----------------------------------   F(1, 2118)      =      0.53
+       Model |  .052429376         1  .052429376   Prob > F        =    0.4670
+    Residual |  209.839802     2,118  .099074505   R-squared       =    0.0002
+-------------+----------------------------------   Adj R-squared   =   -0.0002
+       Total |  209.892232     2,119  .099052493   Root MSE        =    .31476
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0002273   .0003124     0.73   0.467    -.0003854    .0008399
+         _cons |   3.816567   .0143433   266.09   0.000     3.788438    3.844695
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2006.png saved as PNG format
+(174,384 observations deleted)
+note: 2.fuel_contract_type_group identifies no observations in the sample.
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  2,081
+                                                        F(4, 2076)    =  21.96
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.0205
+                                                        Adj R-squared = 0.0186
+                                                        Root MSE      = 0.2979
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      2  |          0  (empty)
+                      4  |   .0077932   .0741793     0.11   0.916    -.1376803    .1532667
+                      5  |  -.1021518   .0241855    -4.22   0.000    -.1495822   -.0547213
+                      6  |   .0959899   .0134217     7.15   0.000     .0696685    .1223113
+                         |
+          seam_height_in |   .0000596   .0003359     0.18   0.859    -.0005992    .0007184
+                   _cons |   3.844021   .0175317   219.26   0.000      3.80964    3.878403
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      2,081
+                                                  Wald chi2(4)    =       0.97
+                                                  Prob > chi2     =     0.9144
+                                                  R-squared       =          .
+                                                  Root MSE        =      17.18
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -58.29371   323.0017    -0.18   0.857    -691.3655     574.778
+                         |
+fuel_contract_type_group |
+                      2  |          0  (empty)
+                      4  |   .4300346   4.611269     0.09   0.926    -8.607886    9.467955
+                      5  |  -6.008308   33.46585    -0.18   0.858    -71.60017    59.58355
+                      6  |   4.852264   30.95258     0.16   0.875    -55.81367     65.5182
+                         |
+                   _cons |   227.4652   1242.528     0.18   0.855    -2207.844    2662.775
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 4.fuel_contract_type_group 5.fuel_contract_type_group
+              6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%      3.14329       2.169054
+ 5%     3.414443       2.170196
+10%     3.564733       2.465554       Obs              13,835
+25%     3.748327       2.492379       Sum of wgt.      13,835
+
+50%     3.993419                      Mean            3.94382
+                        Largest       Std. dev.      .2940834
+75%     4.153242       4.776599
+90%     4.284965       4.805332       Variance        .086485
+95%     4.349891        4.84332       Skewness      -.7272558
+99%     4.459219        4.89948       Kurtosis       3.903393
+(275 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            4              3
+ 5%            5              3
+10%            5              3       Obs               2,035
+25%           24              4       Sum of wgt.       2,035
+
+50%           42                      Mean           39.69238
+                        Largest       Std. dev.      21.19363
+75%           56             65
+90%           65             65       Variance       449.1698
+95%           65             65       Skewness      -.5459839
+99%           65             65       Kurtosis       1.959961
+(11,528 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     2,032
+-------------+----------------------------------   F(1, 2030)      =      0.02
+       Model |  .001595395         1  .001595395   Prob > F        =    0.8853
+    Residual |  155.519951     2,030  .076610813   R-squared       =    0.0000
+-------------+----------------------------------   Adj R-squared   =   -0.0005
+       Total |  155.521546     2,031  .076573878   Root MSE        =    .27679
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |  -.0000419   .0002902    -0.14   0.885     -.000611    .0005273
+         _cons |   3.878097   .0130677   296.77   0.000     3.852469    3.903724
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2007.png saved as PNG format
+(169,997 observations deleted)
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  3,306
+                                                        F(3, 3302)    = 111.92
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.1005
+                                                        Adj R-squared = 0.0996
+                                                        Root MSE      = 0.3477
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      5  |   .3427571   .0335808    10.21   0.000     .2769157    .4085985
+                      6  |   .2795649   .0175867    15.90   0.000      .245083    .3140469
+                         |
+          seam_height_in |   .0006534   .0002732     2.39   0.017     .0001177    .0011892
+                   _cons |   3.967821   .0140046   283.32   0.000     3.940362    3.995279
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      3,306
+                                                  Wald chi2(3)    =     221.20
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =          .
+                                                  Root MSE        =     1.4904
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -2.850569   1.831375    -1.56   0.120    -6.439997    .7388603
+                         |
+fuel_contract_type_group |
+                      5  |  -.2878202   .6291339    -0.46   0.647      -1.5209    .9452596
+                      6  |  -.2310055   .5181762    -0.45   0.656    -1.246612    .7846013
+                         |
+                   _cons |   14.53491   7.318844     1.99   0.047     .1902373    28.87958
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.335414       2.154085
+ 5%     3.575431       2.821974
+10%     3.684369       2.869035       Obs              18,222
+25%     3.907412       2.873565       Sum of wgt.      18,222
+
+50%     4.127295                      Mean           4.132324
+                        Largest       Std. dev.      .3492479
+75%     4.345103       5.344963
+90%     4.577079       5.352427       Variance       .1219741
+95%     4.746062       5.379943       Skewness       .2032978
+99%     5.055226        5.47353       Kurtosis       3.356912
+(363 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            1              1
+ 5%            4              1
+10%            5              1       Obs               3,206
+25%           24              1       Sum of wgt.       3,206
+
+50%           44                      Mean            41.0131
+                        Largest       Std. dev.      22.54847
+75%           63             65
+90%           64             65       Variance       508.4335
+95%           65             65       Skewness      -.5587682
+99%           65             65       Kurtosis        1.81784
+(14,653 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     3,206
+-------------+----------------------------------   F(1, 3204)      =      3.07
+       Model |  .347307955         1  .347307955   Prob > F        =    0.0797
+    Residual |  362.171683     3,204  .113037354   R-squared       =    0.0010
+-------------+----------------------------------   Adj R-squared   =    0.0006
+       Total |  362.518991     3,205   .11311045   Root MSE        =    .33621
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |  -.0004617   .0002634    -1.75   0.080    -.0009781    .0000547
+         _cons |   4.082941   .0123264   331.24   0.000     4.058773     4.10711
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2008.png saved as PNG format
+(177,227 observations deleted)
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  2,205
+                                                        F(3, 2201)    =  29.00
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.0303
+                                                        Adj R-squared = 0.0290
+                                                        Root MSE      = 0.4068
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      5  |    .085935   .0411029     2.09   0.037     .0053305    .1665395
+                      6  |   .1604379   .0212932     7.53   0.000      .118681    .2021948
+                         |
+          seam_height_in |   .0013068   .0003788     3.45   0.001      .000564    .0020495
+                   _cons |   4.083591   .0170691   239.24   0.000     4.050118    4.117064
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      2,205
+                                                  Wald chi2(3)    =     121.61
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =          .
+                                                  Root MSE        =     1.6514
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -2.285018    1.09704    -2.08   0.037    -4.435177   -.1348593
+                         |
+fuel_contract_type_group |
+                      5  |  -.5618651   .2085639    -2.69   0.007    -.9706428   -.1530874
+                      6  |  -.5889031   .2148862    -2.74   0.006    -1.010072   -.1677339
+                         |
+                   _cons |   12.58726   4.525842     2.78   0.005     3.716772    21.45775
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.284664       2.857045
+ 5%     3.540089       2.880883
+10%     3.674273       2.986691       Obs              10,992
+25%     3.977436       3.001217       Sum of wgt.      10,992
+
+50%     4.254619                      Mean            4.23108
+                        Largest       Std. dev.      .3964468
+75%     4.525153        5.43734
+90%     4.699935       5.444061       Variance       .1571701
+95%     4.873517        5.44975       Skewness      -.2254106
+99%     5.019793       5.495528       Kurtosis       2.704645
+(217 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            1              1
+ 5%            5              1
+10%            5              1       Obs               2,159
+25%            9              1       Sum of wgt.       2,159
+
+50%           40                      Mean           36.10977
+                        Largest       Std. dev.      22.42259
+75%           56             65
+90%           64             65       Variance       502.7725
+95%           65             65       Skewness      -.2112903
+99%           65             65       Kurtosis       1.571527
+(8,616 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     2,159
+-------------+----------------------------------   F(1, 2157)      =     14.88
+       Model |   2.2553968         1   2.2553968   Prob > F        =    0.0001
+    Residual |  326.963757     2,157  .151582641   R-squared       =    0.0069
+-------------+----------------------------------   Adj R-squared   =    0.0064
+       Total |  329.219154     2,158  .152557532   Root MSE        =    .38934
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0014418   .0003738     3.86   0.000     .0007088    .0021748
+         _cons |    4.10251   .0158865   258.24   0.000     4.071356    4.133664
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2009.png saved as PNG format
+(178,336 observations deleted)
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  2,219
+                                                        F(3, 2215)    =  29.39
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.0391
+                                                        Adj R-squared = 0.0378
+                                                        Root MSE      = 0.3590
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      5  |    .200613   .0897792     2.23   0.026     .0245528    .3766731
+                      6  |  -.1071314   .0224647    -4.77   0.000    -.1511855   -.0630773
+                         |
+          seam_height_in |    .003118   .0003831     8.14   0.000     .0023667    .0038693
+                   _cons |   4.062887   .0192109   211.49   0.000     4.025214    4.100561
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      2,219
+                                                  Wald chi2(3)    =     100.06
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =     0.0322
+                                                  Root MSE        =     1.2274
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -.0073536   .4028281    -0.02   0.985    -.7968821    .7821749
+                         |
+fuel_contract_type_group |
+                      5  |    .188919   .2359062     0.80   0.423    -.2734486    .6512867
+                      6  |  -.7171329   .0793214    -9.04   0.000    -.8726001   -.5616658
+                         |
+                   _cons |    3.23759   1.690804     1.91   0.056     -.076326    6.551506
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.305787       2.609334
+ 5%     3.592644       2.681706
+10%     3.747384       2.805782       Obs               9,883
+25%     3.961385        2.81481       Sum of wgt.       9,883
+
+50%     4.255613                      Mean           4.222898
+                        Largest       Std. dev.      .3737796
+75%     4.491105       5.270432
+90%     4.662212       5.270689       Variance       .1397112
+95%     4.825269       5.277707       Skewness      -.2083688
+99%     5.015556       5.309406       Kurtosis       2.902471
+(196 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            2              1
+ 5%            5              1
+10%            5              1       Obs               2,186
+25%           20              2       Sum of wgt.       2,186
+
+50%           44                      Mean           40.15188
+                        Largest       Std. dev.      21.73655
+75%           60             65
+90%           64             65       Variance       472.4776
+95%           65             65       Skewness      -.5450194
+99%           65             65       Kurtosis       1.850043
+(7,504 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     2,183
+-------------+----------------------------------   F(1, 2181)      =     56.33
+       Model |  6.67140241         1  6.67140241   Prob > F        =    0.0000
+    Residual |  258.301043     2,181   .11843239   R-squared       =    0.0252
+-------------+----------------------------------   Adj R-squared   =    0.0247
+       Total |  264.972445     2,182  .121435584   Root MSE        =    .34414
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0025478   .0003395     7.51   0.000     .0018821    .0032135
+         _cons |   4.075306   .0155089   262.77   0.000     4.044892     4.10572
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2010.png saved as PNG format
+(178,605 observations deleted)
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  2,257
+                                                        F(3, 2253)    =   3.46
+                                                        Prob > F      = 0.0157
+                                                        R-squared     = 0.0046
+                                                        Adj R-squared = 0.0033
+                                                        Root MSE      = 0.3363
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      5  |  -.1076759   .1002221    -1.07   0.283    -.3042132    .0888615
+                      6  |  -.0465799   .0180905    -2.57   0.010    -.0820556   -.0111042
+                         |
+          seam_height_in |   .0006951   .0003512     1.98   0.048     6.50e-06    .0013837
+                   _cons |   4.177397   .0166172   251.39   0.000     4.144811    4.209984
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      2,257
+                                                  Wald chi2(3)    =     157.49
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =     0.0798
+                                                  Root MSE        =      1.203
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -.4108513   1.732266    -0.24   0.813     -3.80603    2.984327
+                         |
+fuel_contract_type_group |
+                      5  |  -.1854082   .3267491    -0.57   0.570    -.8258247    .4550082
+                      6  |  -.8827947   .0980327    -9.01   0.000    -1.074935   -.6906542
+                         |
+                   _cons |   4.970325   7.287017     0.68   0.495    -9.311965    19.25262
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.362803       2.277267
+ 5%     3.686376       2.282382
+10%     3.808439       2.287472       Obs               9,614
+25%     4.047253       2.298577       Sum of wgt.       9,614
+
+50%     4.326646                      Mean            4.27177
+                        Largest       Std. dev.      .3445462
+75%     4.518522       5.183916
+90%     4.643525       5.195177       Variance       .1187121
+95%     4.755485       5.208338       Skewness      -.5667863
+99%     4.993625       5.251016       Kurtosis       3.865933
+(192 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            2              2
+ 5%            5              2
+10%            8              2       Obs               2,227
+25%            9              2       Sum of wgt.       2,227
+
+50%           47                      Mean           39.98922
+                        Largest       Std. dev.      22.00443
+75%           60             65
+90%           64             65       Variance       484.1949
+95%           65             65       Skewness      -.5344467
+99%           65             65       Kurtosis       1.773148
+(7,195 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     2,227
+-------------+----------------------------------   F(1, 2225)      =     10.49
+       Model |  .994211527         1  .994211527   Prob > F        =    0.0012
+    Residual |  210.913275     2,225  .094792483   R-squared       =    0.0047
+-------------+----------------------------------   Adj R-squared   =    0.0042
+       Total |  211.907487     2,226  .095196535   Root MSE        =    .30788
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0009604   .0002966     3.24   0.001     .0003789     .001542
+         _cons |      4.169   .0135354   308.01   0.000     4.142457    4.195543
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2011.png saved as PNG format
+(181,301 observations deleted)
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  1,863
+                                                        F(3, 1859)    =  63.35
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.0680
+                                                        Adj R-squared = 0.0665
+                                                        Root MSE      = 0.3003
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      5  |   .0110203   .1007462     0.11   0.913    -.1865672    .2086078
+                      6  |  -.2250931   .0177586   -12.68   0.000     -.259922   -.1902641
+                         |
+          seam_height_in |   .0027808   .0003663     7.59   0.000     .0020624    .0034992
+                   _cons |   4.090156   .0177324   230.66   0.000     4.055379    4.124934
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      1,863
+                                                  Wald chi2(3)    =      70.08
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =          .
+                                                  Root MSE        =     1.5585
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |   1.964599   .6450738     3.05   0.002     .7002774     3.22892
+                         |
+fuel_contract_type_group |
+                      5  |   .0813172   .3332842     0.24   0.807    -.5719078    .7345422
+                      6  |  -.8166471   .2220963    -3.68   0.000    -1.251948   -.3813463
+                         |
+                   _cons |  -5.028167   2.717086    -1.85   0.064    -10.35356    .2972239
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.318178       2.356126
+ 5%     3.685875       2.391511
+10%     3.818372       2.391511       Obs               6,918
+25%     3.991019       2.397895       Sum of wgt.       6,918
+
+50%     4.296945                      Mean           4.248184
+                        Largest       Std. dev.      .3443089
+75%     4.530878       5.155313
+90%     4.655198       5.260304       Variance       .1185486
+95%     4.720194       5.339123       Skewness      -.5299433
+99%     4.873822       5.990739       Kurtosis       3.682177
+(138 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            3              2
+ 5%            5              2
+10%            8              2       Obs               1,845
+25%            9              2       Sum of wgt.       1,845
+
+50%           43                      Mean           39.06612
+                        Largest       Std. dev.      21.76307
+75%           58             65
+90%           64             65       Variance       473.6312
+95%           65             65       Skewness      -.5023826
+99%           65             65       Kurtosis       1.734247
+(4,953 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     1,827
+-------------+----------------------------------   F(1, 1825)      =     88.65
+       Model |  7.49799581         1  7.49799581   Prob > F        =    0.0000
+    Residual |  154.351095     1,825  .084575943   R-squared       =    0.0463
+-------------+----------------------------------   Adj R-squared   =    0.0458
+       Total |  161.849091     1,826  .088635866   Root MSE        =    .29082
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0029728   .0003157     9.42   0.000     .0023536    .0035921
+         _cons |    4.05272   .0141877   285.65   0.000     4.024895    4.080546
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2012.png saved as PNG format
+(181,895 observations deleted)
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  1,904
+                                                        F(3, 1900)    =  76.02
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.1083
+                                                        Adj R-squared = 0.1069
+                                                        Root MSE      = 0.2682
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      5  |   -.069222   .0555133    -1.25   0.213    -.1780954    .0396514
+                      6  |  -.1294341   .0167782    -7.71   0.000    -.1623398   -.0965284
+                         |
+          seam_height_in |   .0038017   .0003458    11.00   0.000     .0031236    .0044799
+                   _cons |   4.007316   .0177102   226.27   0.000     3.972582    4.042049
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      1,904
+                                                  Wald chi2(3)    =     209.89
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =     0.1362
+                                                  Root MSE        =     1.2948
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -.1490956   .4128032    -0.36   0.718     -.958175    .6599838
+                         |
+fuel_contract_type_group |
+                      5  |   .1828303   .2995983     0.61   0.542    -.4043716    .7700322
+                      6  |  -1.271929   .1146614   -11.09   0.000    -1.496661   -1.047196
+                         |
+                   _cons |   4.018754    1.72912     2.32   0.020     .6297403    7.407768
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.394173       2.405142
+ 5%     3.720862       2.432736
+10%     3.806218       2.458734       Obs               6,324
+25%     3.947969         2.4681       Sum of wgt.       6,324
+
+50%     4.189276                      Mean           4.194126
+                        Largest       Std. dev.      .3252528
+75%     4.453184       5.070224
+90%     4.614427       5.076423       Variance       .1057894
+95%     4.687579       5.107399       Skewness      -.2905506
+99%     4.815431       5.110843       Kurtosis       3.433528
+(126 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            4              1
+ 5%            5              2
+10%            8              3       Obs               1,881
+25%           36              3       Sum of wgt.       1,881
+
+50%           51                      Mean            42.8554
+                        Largest       Std. dev.      20.32592
+75%           60             65
+90%           64             65       Variance       413.1429
+95%           65             65       Skewness      -.8462547
+99%           65             65       Kurtosis       2.353603
+(4,332 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     1,866
+-------------+----------------------------------   F(1, 1864)      =    157.28
+       Model |  10.4859657         1  10.4859657   Prob > F        =    0.0000
+    Residual |  124.275661     1,864  .066671492   R-squared       =    0.0778
+-------------+----------------------------------   Adj R-squared   =    0.0773
+       Total |  134.761626     1,865  .072258245   Root MSE        =    .25821
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0037331   .0002977    12.54   0.000     .0031493    .0043169
+         _cons |   3.977024   .0141745   280.58   0.000     3.949225    4.004824
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2013.png saved as PNG format
+(181,294 observations deleted)
+note: 4.fuel_contract_type_group identifies no observations in the sample.
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  2,156
+                                                        F(3, 2152)    =  52.25
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.0750
+                                                        Adj R-squared = 0.0737
+                                                        Root MSE      = 0.2628
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      4  |          0  (empty)
+                      5  |   .0602262   .0447671     1.35   0.179    -.0275652    .1480175
+                      6  |  -.0312812   .0130992    -2.39   0.017    -.0569696   -.0055928
+                         |
+          seam_height_in |   .0031619   .0002658    11.90   0.000     .0026407    .0036831
+                   _cons |    4.02598   .0125101   321.82   0.000     4.001447    4.050513
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      2,156
+                                                  Wald chi2(3)    =     108.95
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =     0.0542
+                                                  Root MSE        =      1.306
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -.2555945   .3865911    -0.66   0.509    -1.013299    .5021101
+                         |
+fuel_contract_type_group |
+                      4  |          0  (empty)
+                      5  |     .07964   .2685383     0.30   0.767    -.4466854    .6059655
+                      6  |  -.6936667   .0694033    -9.99   0.000    -.8296948   -.5576387
+                         |
+                   _cons |    4.42206   1.605823     2.75   0.006     1.274704    7.569416
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.584907       1.975469
+ 5%      3.76213       2.440606
+10%     3.839022       2.529721       Obs               6,925
+25%     3.963476       3.025291       Sum of wgt.       6,925
+
+50%     4.201553                      Mean           4.191832
+                        Largest       Std. dev.      .2852928
+75%     4.416911       5.001998
+90%      4.53871       5.268631       Variance        .081392
+95%     4.628887       5.489392       Skewness      -.2001529
+99%     4.792397       6.376183       Kurtosis       4.057747
+(138 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            2              1
+ 5%            4              1
+10%            4              2       Obs               2,132
+25%            9              2       Sum of wgt.       2,132
+
+50%           43                      Mean           38.11398
+                        Largest       Std. dev.      23.08671
+75%           56             65
+90%           65             65       Variance       532.9964
+95%           65             65       Skewness      -.4391663
+99%           65             65       Kurtosis       1.610583
+(4,657 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     2,130
+-------------+----------------------------------   F(1, 2128)      =    157.89
+       Model |  9.84569067         1  9.84569067   Prob > F        =    0.0000
+    Residual |  132.696672     2,128  .062357458   R-squared       =    0.0691
+-------------+----------------------------------   Adj R-squared   =    0.0686
+       Total |  142.542362     2,129   .06695273   Root MSE        =    .24971
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0029478   .0002346    12.57   0.000     .0024877    .0034079
+         _cons |   4.023532    .010458   384.73   0.000     4.003023    4.044041
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2014.png saved as PNG format
+(182,925 observations deleted)
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  1,804
+                                                        F(3, 1800)    =  26.54
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.0510
+                                                        Adj R-squared = 0.0494
+                                                        Root MSE      = 0.2446
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      5  |  -.0595516   .0784231    -0.76   0.448    -.2133616    .0942584
+                      6  |  -.0260374   .0146338    -1.78   0.075    -.0547385    .0026637
+                         |
+          seam_height_in |    .002278   .0002748     8.29   0.000     .0017392    .0028169
+                   _cons |   4.023149    .013299   302.51   0.000     3.997066    4.049232
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      1,804
+                                                  Wald chi2(3)    =      46.24
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =          .
+                                                  Root MSE        =     1.3284
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -2.023562   .5858063    -3.45   0.001    -3.171722   -.8754033
+                         |
+fuel_contract_type_group |
+                      5  |  -.4152297   .3191827    -1.30   0.193    -1.040816    .2103569
+                      6  |  -.5075261   .0758276    -6.69   0.000    -.6561455   -.3589066
+                         |
+                   _cons |   11.75394   2.413473     4.87   0.000     7.023616    16.48426
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.400531       2.829678
+ 5%     3.697591       3.080992
+10%      3.79121       3.113071       Obs               5,294
+25%     3.914819       3.121042       Sum of wgt.       5,294
+
+50%     4.113003                      Mean           4.119261
+                        Largest       Std. dev.      .2773484
+75%      4.32625       5.027755
+90%     4.468892       5.039611       Variance       .0769221
+95%     4.561009       5.083514       Skewness      -.1054317
+99%     4.708539       5.176206       Kurtosis       3.088672
+(104 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            3              2
+ 5%            4              2
+10%            4              2       Obs               1,794
+25%            8              2       Sum of wgt.       1,794
+
+50%           47                      Mean           38.57581
+                        Largest       Std. dev.      23.74927
+75%           63             65
+90%           65             65       Variance        564.028
+95%           65             65       Skewness      -.4596594
+99%           65             65       Kurtosis         1.5694
+(3,404 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     1,786
+-------------+----------------------------------   F(1, 1784)      =     94.96
+       Model |  5.43370644         1  5.43370644   Prob > F        =    0.0000
+    Residual |  102.077392     1,784  .057218269   R-squared       =    0.0505
+-------------+----------------------------------   Adj R-squared   =    0.0500
+       Total |  107.511098     1,785  .060230307   Root MSE        =     .2392
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0023304   .0002391     9.74   0.000     .0018614    .0027994
+         _cons |   4.011102   .0108564   369.47   0.000     3.989809    4.032394
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2015.png saved as PNG format
+(184,188 observations deleted)
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  1,723
+                                                        F(3, 1719)    =  12.77
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.0195
+                                                        Adj R-squared = 0.0178
+                                                        Root MSE      = 0.2362
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      5  |   .0832995   .0362802     2.30   0.022     .0121415    .1544576
+                      6  |  -.0633587    .013787    -4.60   0.000    -.0903997   -.0363176
+                         |
+          seam_height_in |   .0007396   .0002533     2.92   0.004     .0002428    .0012363
+                   _cons |   4.039983   .0126612   319.08   0.000      4.01515    4.064816
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      1,723
+                                                  Wald chi2(3)    =     139.66
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =          .
+                                                  Root MSE        =     1.7854
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -5.545464   2.514857    -2.21   0.027    -10.47449   -.6164357
+                         |
+fuel_contract_type_group |
+                      5  |  -2.871368   .3845381    -7.47   0.000    -3.625049   -2.117687
+                      6  |  -1.150489   .2074772    -5.55   0.000    -1.557137   -.7438412
+                         |
+                   _cons |   26.05417   10.23988     2.54   0.011     5.984379    46.12397
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.346389       2.906354
+ 5%      3.62594       2.978077
+10%     3.721589       2.992226       Obs               4,031
+25%     3.849722       2.996232       Sum of wgt.       4,031
+
+50%     4.028739                      Mean           4.044621
+                        Largest       Std. dev.      .2772249
+75%     4.254761       4.722331
+90%     4.417032       4.722598       Variance       .0768537
+95%     4.473009       4.747884       Skewness      -.2227256
+99%     4.631909       4.910889       Kurtosis       3.093549
+(80 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            2              2
+ 5%            4              2
+10%            4              2       Obs               1,704
+25%            8              2       Sum of wgt.       1,704
+
+50%           47                      Mean           39.19425
+                        Largest       Std. dev.      24.57104
+75%           63             65
+90%           65             65       Variance       603.7362
+95%           65             65       Skewness        -.45641
+99%           65             65       Kurtosis       1.517435
+(2,247 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     1,704
+-------------+----------------------------------   F(1, 1702)      =      5.15
+       Model |   .27175958         1   .27175958   Prob > F        =    0.0234
+    Residual |  89.7997084     1,702  .052761286   R-squared       =    0.0030
+-------------+----------------------------------   Adj R-squared   =    0.0024
+       Total |   90.071468     1,703  .052889881   Root MSE        =     .2297
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0005141   .0002265     2.27   0.023     .0000698    .0009584
+         _cons |   4.031455   .0104783   384.74   0.000     4.010903    4.052007
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2016.png saved as PNG format
+(184,197 observations deleted)
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  1,646
+                                                        F(3, 1642)    =  20.36
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.0293
+                                                        Adj R-squared = 0.0275
+                                                        Root MSE      = 0.2544
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      5  |   .2736068   .0480161     5.70   0.000     .1794277     .367786
+                      6  |   .0971425   .0183215     5.30   0.000     .0612064    .1330785
+                         |
+          seam_height_in |   .0005879   .0002785     2.11   0.035     .0000417    .0011341
+                   _cons |    3.96822   .0131561   301.62   0.000     3.942415    3.994025
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      1,646
+                                                  Wald chi2(3)    =     330.58
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =          .
+                                                  Root MSE        =     1.9007
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -5.448317   3.600102    -1.51   0.130    -12.50439    1.607754
+                         |
+fuel_contract_type_group |
+                      5  |  -4.473775   .9944356    -4.50   0.000    -6.422833   -2.524717
+                      6  |  -.4972826   .3834458    -1.30   0.195    -1.248822    .2542573
+                         |
+                   _cons |   25.22316   14.37557     1.75   0.079    -2.952435    53.39875
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.255401       2.826129
+ 5%     3.602777       2.851862
+10%     3.681351       2.866762       Obs               4,022
+25%     3.816173       2.878637       Sum of wgt.       4,022
+
+50%     4.019621                      Mean           4.017803
+                        Largest       Std. dev.      .2778133
+75%     4.251063        4.59512
+90%     4.379649       4.616506       Variance       .0771803
+95%     4.443944       4.778199       Skewness      -.3415465
+99%     4.521571       4.883938       Kurtosis         3.1868
+(80 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            2              1
+ 5%            4              2
+10%            4              2       Obs               1,635
+25%            9              2       Sum of wgt.       1,635
+
+50%           51                      Mean           40.91009
+                        Largest       Std. dev.      23.81364
+75%           63             65
+90%           65             65       Variance       567.0892
+95%           65             65       Skewness      -.6073118
+99%           65             65       Kurtosis       1.727214
+(2,308 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     1,634
+-------------+----------------------------------   F(1, 1632)      =      7.56
+       Model |  .485700798         1  .485700798   Prob > F        =    0.0060
+    Residual |  104.886849     1,632  .064268903   R-squared       =    0.0046
+-------------+----------------------------------   Adj R-squared   =    0.0040
+       Total |   105.37255     1,633  .064526975   Root MSE        =    .25351
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0007246   .0002636     2.75   0.006     .0002076    .0012416
+         _cons |   3.975651     .01248   318.56   0.000     3.951172    4.000129
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2017.png saved as PNG format
+(184,491 observations deleted)
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  1,581
+                                                        F(3, 1577)    =  51.42
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.0872
+                                                        Adj R-squared = 0.0854
+                                                        Root MSE      = 0.2481
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      5  |   .1329178   .1092432     1.22   0.224    -.0813595     .347195
+                      6  |    .195042   .0189996    10.27   0.000      .157775    .2323091
+                         |
+          seam_height_in |   .0013958   .0002769     5.04   0.000     .0008527    .0019388
+                   _cons |   3.882054    .012552   309.28   0.000     3.857433    3.906674
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      1,581
+                                                  Wald chi2(3)    =      47.99
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =          .
+                                                  Root MSE        =      1.331
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -1.524985   1.108794    -1.38   0.169     -3.69818    .6482109
+                         |
+fuel_contract_type_group |
+                      5  |   .1082744   .4457877     0.24   0.808    -.7654535    .9820024
+                      6  |  -.4859909   .2496985    -1.95   0.052     -.975391    .0034093
+                         |
+                   _cons |    9.38106   4.373644     2.14   0.032     .8088749    17.95324
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.285412       1.913977
+ 5%     3.639426       2.739549
+10%     3.684118       2.778198       Obs               3,728
+25%     3.786913       2.815409       Sum of wgt.       3,728
+
+50%     4.012954                      Mean           4.022405
+                        Largest       Std. dev.      .2917369
+75%     4.290528       4.635408
+90%     4.402074       4.639862       Variance       .0851104
+95%     4.464182       4.674323       Skewness      -.1980126
+99%     4.566013       4.686934       Kurtosis       3.294918
+(74 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            3              3
+ 5%            4              3
+10%            4              3       Obs               1,577
+25%            9              3       Sum of wgt.       1,577
+
+50%           48                      Mean           41.73874
+                        Largest       Std. dev.      22.85774
+75%           63             65
+90%           65             65       Variance       522.4761
+95%           65             65       Skewness      -.7373562
+99%           65             65       Kurtosis       1.954293
+(2,077 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     1,577
+-------------+----------------------------------   F(1, 1575)      =     32.66
+       Model |  2.12660907         1  2.12660907   Prob > F        =    0.0000
+    Residual |   102.54161     1,575  .065105784   R-squared       =    0.0203
+-------------+----------------------------------   Adj R-squared   =    0.0197
+       Total |  104.668219     1,576  .066413844   Root MSE        =    .25516
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0016071   .0002812     5.72   0.000     .0010555    .0021586
+         _cons |   3.899018   .0133802   291.40   0.000     3.872773    3.925263
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2018.png saved as PNG format
+(184,553 observations deleted)
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  1,767
+                                                        F(3, 1763)    =  87.18
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.1295
+                                                        Adj R-squared = 0.1280
+                                                        Root MSE      = 0.2104
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      5  |    .404683   .0418642     9.67   0.000     .3225743    .4867918
+                      6  |    .168974   .0138903    12.16   0.000     .1417308    .1962171
+                         |
+          seam_height_in |   .0015278   .0002352     6.50   0.000     .0010665    .0019891
+                   _cons |   3.865338   .0117903   327.84   0.000     3.842214    3.888463
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      1,767
+                                                  Wald chi2(3)    =      79.36
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =     0.0985
+                                                  Root MSE        =     1.1081
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |    .154899    .835967     0.19   0.853    -1.483566    1.793364
+                         |
+fuel_contract_type_group |
+                      5  |  -2.917679   .6060672    -4.81   0.000    -4.105549   -1.729809
+                      6  |   -.457527   .1476023    -3.10   0.002    -.7468222   -.1682319
+                         |
+                   _cons |   2.814215   3.292753     0.85   0.393    -3.639461    9.267892
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.294725       2.688528
+ 5%     3.657905       2.832625
+10%     3.710641       2.840831       Obs               3,666
+25%     3.799302       2.848971       Sum of wgt.       3,666
+
+50%     4.005877                      Mean           4.020757
+                        Largest       Std. dev.      .2796287
+75%     4.245204       4.805659
+90%     4.387263        4.87657       Variance       .0781922
+95%     4.465563       4.902976       Skewness      -.1235192
+99%      4.59744       4.915958       Kurtosis       3.207775
+(72 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            3              3
+ 5%            4              3
+10%            4              3       Obs               1,764
+25%           36              3       Sum of wgt.       1,764
+
+50%           49                      Mean            43.2415
+                        Largest       Std. dev.      22.50061
+75%           63             65
+90%           65             65       Variance       506.2774
+95%           65             65       Skewness       -.850346
+99%           65             65       Kurtosis       2.173199
+(1,830 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     1,764
+-------------+----------------------------------   F(1, 1762)      =     36.89
+       Model |  1.80007312         1  1.80007312   Prob > F        =    0.0000
+    Residual |  85.9816317     1,762  .048797748   R-squared       =    0.0205
+-------------+----------------------------------   Adj R-squared   =    0.0200
+       Total |  87.7817049     1,763  .049791097   Root MSE        =     .2209
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0014201   .0002338     6.07   0.000     .0009615    .0018787
+         _cons |   3.899502   .0113969   342.16   0.000      3.87715    3.921855
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2019.png saved as PNG format
+(185,648 observations deleted)
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  1,359
+                                                        F(3, 1355)    =  24.83
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.0544
+                                                        Adj R-squared = 0.0523
+                                                        Root MSE      = 0.2108
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      5  |   .3281243   .0466586     7.03   0.000     .2365932    .4196553
+                      6  |   -.027439   .0258309    -1.06   0.288    -.0781119    .0232339
+                         |
+          seam_height_in |      .0012   .0002502     4.80   0.000     .0007092    .0016908
+                   _cons |   3.856984   .0118363   325.86   0.000     3.833764    3.880203
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      1,359
+                                                  Wald chi2(3)    =      68.60
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =          .
+                                                  Root MSE        =     1.1898
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -2.327612   1.184131    -1.97   0.049    -4.648466   -.0067573
+                         |
+fuel_contract_type_group |
+                      5  |  -2.765242   .6093165    -4.54   0.000     -3.95948   -1.571003
+                      6  |   -.577127   .1371777    -4.21   0.000    -.8459904   -.3082636
+                         |
+                   _cons |    12.5233   4.628438     2.71   0.007     3.451724    21.59487
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.270329       2.766319
+ 5%     3.603594       2.853592
+10%     3.677313       2.888704       Obs               2,571
+25%      3.78009       2.922624       Sum of wgt.       2,571
+
+50%     3.917607                      Mean           3.962937
+                        Largest       Std. dev.      .2632482
+75%     4.152928       4.614725
+90%     4.309321        4.61611       Variance       .0692996
+95%     4.434382       4.624777       Skewness       .0691972
+99%     4.567053       4.642851       Kurtosis        3.20521
+(49 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            3              3
+ 5%            4              3
+10%            4              3       Obs               1,348
+25%           24              3       Sum of wgt.       1,348
+
+50%           49                      Mean           42.61202
+                        Largest       Std. dev.      22.77207
+75%           63             65
+90%           65             65       Variance       518.5672
+95%           65             65       Skewness      -.8387255
+99%           65             65       Kurtosis       2.083833
+(1,174 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     1,348
+-------------+----------------------------------   F(1, 1346)      =     33.17
+       Model |  1.33360056         1  1.33360056   Prob > F        =    0.0000
+    Residual |  54.1117895     1,346  .040201924   R-squared       =    0.0241
+-------------+----------------------------------   Adj R-squared   =    0.0233
+       Total |  55.4453901     1,347  .041162131   Root MSE        =     .2005
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0013817   .0002399     5.76   0.000     .0009111    .0018524
+         _cons |   3.855269     .01159   332.64   0.000     3.832533    3.878006
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2020.png saved as PNG format
+(185,162 observations deleted)
+
+First-stage regressions
+-----------------------
+
+                                                        Number of obs =  1,771
+                                                        F(3, 1767)    =  67.60
+                                                        Prob > F      = 0.0000
+                                                        R-squared     = 0.0984
+                                                        Adj R-squared = 0.0968
+                                                        Root MSE      = 0.2365
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+        ln_price_per_ton | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+fuel_contract_type_group |
+                      5  |  -.0437675    .030323    -1.44   0.149    -.1032403    .0157052
+                      6  |   .0508433   .0162809     3.12   0.002     .0189115    .0827751
+                         |
+          seam_height_in |   .0033836   .0002444    13.84   0.000     .0029043     .003863
+                   _cons |   3.745784   .0121059   309.42   0.000     3.722041    3.769528
+------------------------------------------------------------------------------------------
+
+
+Instrumental variables 2SLS regression            Number of obs   =      1,771
+                                                  Wald chi2(3)    =      75.79
+                                                  Prob > chi2     =     0.0000
+                                                  R-squared       =     0.0178
+                                                  Root MSE        =     1.1944
+
+------------------------------------------------------------------------------------------
+                         |               Robust
+       ln_qty_coal_purch | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+        ln_price_per_ton |  -.6920088   .3649093    -1.90   0.058    -1.407218    .0232002
+                         |
+fuel_contract_type_group |
+                      5  |   -1.83149   .6338781    -2.89   0.004    -3.073868   -.5891116
+                      6  |  -.5420461   .0688619    -7.87   0.000    -.6770129   -.4070793
+                         |
+                   _cons |   6.083278   1.425966     4.27   0.000     3.288436    8.878119
+------------------------------------------------------------------------------------------
+Instrumented: ln_price_per_ton
+ Instruments: 5.fuel_contract_type_group 6.fuel_contract_type_group seam_height_in
+
+                      ln_PRICE_PER_TON
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%     3.323596       2.505526
+ 5%     3.551053       2.890372
+10%     3.633367       2.890372       Obs               3,057
+25%     3.765609       2.966303       Sum of wgt.       3,057
+
+50%     3.910021                      Mean           3.957734
+                        Largest       Std. dev.      .2904093
+75%     4.139796       5.135034
+90%     4.379523       5.219274       Variance       .0843375
+95%     4.482551       5.222785       Skewness       .4095493
+99%       4.6718       5.223486       Kurtosis       3.613004
+(60 observations deleted)
+
+                       seam_height_in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            4              3
+ 5%            4              3
+10%            4              3       Obs               1,757
+25%           47              3       Sum of wgt.       1,757
+
+50%           53                      Mean           44.95162
+                        Largest       Std. dev.      22.22517
+75%           63             65
+90%           65             65       Variance       493.9584
+95%           65             65       Skewness      -1.020217
+99%           65             65       Kurtosis       2.448182
+(1,245 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =     1,752
+-------------+----------------------------------   F(1, 1750)      =    192.97
+       Model |  9.89839212         1  9.89839212   Prob > F        =    0.0000
+    Residual |  89.7669529     1,750  .051295402   R-squared       =    0.0993
+-------------+----------------------------------   Adj R-squared   =    0.0988
+       Total |   99.665345     1,751  .056919101   Root MSE        =    .22648
+
+--------------------------------------------------------------------------------
+ln_price_per~n | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+seam_height_in |   .0033954   .0002444    13.89   0.000      .002916    .0038748
+         _cons |   3.756649   .0122738   306.07   0.000     3.732576    3.780722
+--------------------------------------------------------------------------------
+file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON
+    21110/FINAL PROJECT/econ-21110-winter-2023/output/seam_height_firststage_2021.png saved as PNG format
 
 . 
 . 
@@ -107,5 +2463,5 @@ Instrumented: ln_price_per_ton
        log:  /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 2111
 > 0/FINAL PROJECT/econ-21110-winter-2023/code/extension_regression_analysis.log
   log type:  text
- closed on:   2 Feb 2023, 00:40:40
+ closed on:   2 Feb 2023, 17:30:00
 -------------------------------------------------------------------------------------------------------------
