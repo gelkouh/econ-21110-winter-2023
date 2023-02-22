@@ -1,12 +1,12 @@
-# Last updated: Feb 19, 2023
+# Last updated: Feb 21, 2023
 
 library(tidyverse)
 library(reshape2)
 library(readxl)
 
-ddir_cedric <- "/Users/gelkouh/Google Drive (UChicago)/Classes/ECON 21110/data/"
-# ddir_matt <- ...
-ddir <- ddir_cedric
+# ddir_cedric <- "/Users/gelkouh/Google Drive (UChicago)/Classes/ECON 21110/data/"
+ddir_matt <- './data/'
+ddir <- ddir_matt
 
 ##----------##
 # FRED PPI data
@@ -111,10 +111,17 @@ contracts_full <- contracts_semi_cleaned %>%
 # BEA state real GDP data
 ##----------##
 
-# ...
- 
-# contracts_full <- contracts_full %>%
-#   left_join(bea_gdp, by = c("state", "year"))
+bea_df <- read.csv(paste0(ddir,'BEA','/SAGDP1__ALL_AREAS_1997_2021.csv'))
+
+bea_gdp <- bea_df %>%
+  filter((GeoName != 'United States') & (LineCode == 1)) %>%
+  mutate(STATE = state.abb[match(GeoName,state.name)]) %>%
+  pivot_longer(cols = starts_with('X'),names_to = 'year',values_to = 'rgdp') %>%
+  mutate(year = as.numeric(str_sub(year,start = 2))) %>%
+  select(STATE,year,rgdp)
+  
+contracts_full <- contracts_full %>%
+  left_join(bea_gdp, by = c("STATE", "year"))
 
 write_csv(contracts_full, file.path(ddir, "cleaned", "contracts_cleaned.csv"))
 
