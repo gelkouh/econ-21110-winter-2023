@@ -121,7 +121,8 @@ bea_gdp <- bea_df %>%
   select(STATE,year,rgdp)
   
 contracts_full <- contracts_full %>%
-  left_join(bea_gdp, by = c("STATE", "year"))
+  left_join(bea_gdp, by = c("STATE", "year")) %>%
+  filter(year != 2022)
 
 write_csv(contracts_full, file.path(ddir, "cleaned", "contracts_cleaned.csv"))
 
