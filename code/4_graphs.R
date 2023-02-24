@@ -3,9 +3,10 @@
 library(tidyverse)
 library(haven)
 
-# ddir_cedric <- "/Users/gelkouh/Google Drive (UChicago)/Classes/ECON 21110/data/"
+ddir_cedric <- "/Users/gelkouh/Google Drive (UChicago)/Classes/ECON 21110/data/"
+cdir_cedric <- "/Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 21110/FINAL PROJECT/econ-21110-winter-2023/"
 ddir_matt <- './data/'
-ddir <- ddir_matt
+ddir <- ddir_cedric
 
 ##----------##
 # Fig 4 Replication
@@ -27,6 +28,7 @@ fig4_df$avg_ppi = fig4_df$avg_ppi /
 fig4_df$avg_foreigncoalprice = fig4_df$avg_foreigncoalprice / 
   fig4_df$avg_foreigncoalprice[1]
 
+# dropping some data in 2012?
 ggplot(data = fig4_df, mapping = aes(x=year)) + 
   geom_line(mapping = aes(y = avg_ppi), linetype = 'longdash', color = 'gray') + 
   geom_line(mapping = aes(y = avg_coalpriceindex), color = 'black') +
@@ -57,8 +59,8 @@ ggsave(filename = 'fig4rep.png',
 
 # 1998-2007, 2008-2012
 year <- c(2001.5,2008.5)
-point_est <- c(.0522886,-.1829827)
-se <- c(.0951581,.0657066)
+point_est <- c(0.0795,-0.179)
+se <- c(0.1303,0.0718)
 repCI_df <- tibble(year,point_est,se) %>%
   mutate(wd = 1.96 * se)
 
@@ -75,7 +77,7 @@ ggplot(data = repCI_df, mapping = aes(x=year,y = point_est)) +
         axis.title.y=element_text(size = 14),
         axis.text.y=element_text(size = 12))
 ggsave(filename = 'rep_CIs.png',
-       path = './output',
+       path = file.path(cdir_cedric, "output"),
        device = "png",
        width = 22,
        height = 18,

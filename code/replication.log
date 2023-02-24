@@ -3,7 +3,7 @@
        log:  /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 2111
 > 0/FINAL PROJECT/econ-21110-winter-2023/code/replication.log
   log type:  text
- opened on:  19 Feb 2023, 21:50:04
+ opened on:  24 Feb 2023, 02:07:35
 
 . 
 . ********************************************************************************************************
@@ -108,30 +108,29 @@ file /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChi
 
 . encode province, gen(province_encoded)
 
+.  
+. lab var lncoalconsumption "Ln Coal consumption"
+
+. lab var lnrealcoalpriceindex "Ln Real coal price index"
+
+. lab var t "Time trend"
+
+. lab var lnrealgdp "Ln GDP"
+
 . 
-. summ lncoalconsumption
+. * Table 1: Summary statistics 
+. eststo: quietly estpost summarize ///
+>     lncoalconsumption lnrealcoalpriceindex t lnrealgdp
+(est1 stored)
 
-    Variable |        Obs        Mean    Std. dev.       Min        Max
--------------+---------------------------------------------------------
-lncoalcons~n |        430    4.106663    .9305527   .5247285   5.997397
+. 
+. esttab using "${cdir}output/replication_table1.tex", replace ///
+> cells("mean() sd() min() max()") ///
+> label nonumbers
+(output written to /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECO
+> N 21110/FINAL PROJECT/econ-21110-winter-2023/output/replication_table1.tex)
 
-. summ lnrealcoalpriceindex
-
-    Variable |        Obs        Mean    Std. dev.       Min        Max
--------------+---------------------------------------------------------
-lnrealcoal~x |        403    4.098127    .4318536   2.793868   4.774778
-
-. summ t
-
-    Variable |        Obs        Mean    Std. dev.       Min        Max
--------------+---------------------------------------------------------
-           t |        465           7    4.325147          0         14
-
-. summ lnrealgdp
-
-    Variable |        Obs        Mean    Std. dev.       Min        Max
--------------+---------------------------------------------------------
-   lnrealgdp |        465    8.222613    1.110345   4.524124   10.45717
+. eststo clear    
 
 . 
 . sort province year
@@ -145,7 +144,8 @@ lnrealcoal~x |        403    4.098127    .4318536   2.793868   4.774778
 . 
 . * Table 2: Main results 
 . // (1)
-. reg lncoalconsumption lnrealcoalpriceindex lnrealgdp t i.province_encoded, vce(cluster province_encoded)
+. eststo: reg lncoalconsumption lnrealcoalpriceindex lnrealgdp t i.province_encoded, vce(cluster province_enc
+> oded)
 
 Linear regression                               Number of obs     =        379
                                                 F(2, 29)          =          .
@@ -195,6 +195,7 @@ lnrealcoalpriceindex |  -.0254294   .1382453    -0.18   0.855    -.3081729    .2
                      |
                _cons |  -5.211309   1.640132    -3.18   0.004    -8.565756   -1.856862
 --------------------------------------------------------------------------------------
+(est1 stored)
 
 . preserve
 
@@ -202,8 +203,8 @@ lnrealcoalpriceindex |  -.0254294   .1382453    -0.18   0.855    -.3081729    .2
 (155 observations deleted)
 
 .         // (2)
-.         reg lncoalconsumption lnrealcoalpriceindex lnrealgdp t i.province_encoded, vce(cluster province_enc
-> oded) 
+.         eststo: reg lncoalconsumption lnrealcoalpriceindex lnrealgdp t i.province_encoded, vce(cluster prov
+> ince_encoded) 
 
 Linear regression                               Number of obs     =        255
                                                 F(2, 29)          =          .
@@ -253,6 +254,7 @@ lnrealcoalpriceindex |   .0795297   .1302582     0.61   0.546    -.1868783    .3
                      |
                _cons |   -7.49186   1.902925    -3.94   0.000    -11.38378    -3.59994
 --------------------------------------------------------------------------------------
+(est2 stored)
 
 . restore
 
@@ -262,8 +264,8 @@ lnrealcoalpriceindex |   .0795297   .1302582     0.61   0.546    -.1868783    .3
 (310 observations deleted)
 
 .         // (3)
-.         reg lncoalconsumption lnrealcoalpriceindex lnrealgdp t i.province_encoded, vce(cluster province_enc
-> oded) 
+.         eststo: reg lncoalconsumption lnrealcoalpriceindex lnrealgdp t i.province_encoded, vce(cluster prov
+> ince_encoded) 
 
 Linear regression                               Number of obs     =        124
                                                 F(2, 27)          =          .
@@ -311,12 +313,13 @@ lnrealcoalpriceindex |  -.1787896   .0718001    -2.49   0.019    -.3261112    -.
                      |
                _cons |  -5.193641   2.646008    -1.96   0.060     -10.6228    .2355179
 --------------------------------------------------------------------------------------
+(est3 stored)
 
 . restore
 
 . // (4)
-. reg lncoalconsumption c.lnrealcoalpriceindex##c.t lnrealgdp i.province_encoded, vce(cluster province_encode
-> d)
+. eststo: reg lncoalconsumption c.lnrealcoalpriceindex##c.t lnrealgdp i.province_encoded, vce(cluster provinc
+> e_encoded)
 
 Linear regression                               Number of obs     =        379
                                                 F(3, 29)          =          .
@@ -369,11 +372,12 @@ c.lnrealcoalpriceindex#c.t |  -.0300801   .0114407    -2.63   0.014     -.053479
                            |
                      _cons |  -6.252161   1.689294    -3.70   0.001    -9.707154   -2.797167
 --------------------------------------------------------------------------------------------
+(est4 stored)
 
 . 
 . // (5)
-. reg lncoalconsumption lnrealcoalpriceindex lnrealcoalpriceindex_tminus1 lnrealcoalpriceindex_tminus2 lnreal
-> gdp t i.province_encoded, vce(cluster province_encoded)
+. eststo: reg lncoalconsumption lnrealcoalpriceindex lnrealcoalpriceindex_tminus1 lnrealcoalpriceindex_tminus
+> 2 lnrealgdp t i.province_encoded, vce(cluster province_encoded)
 
 Linear regression                               Number of obs     =        320
                                                 F(4, 29)          =          .
@@ -425,10 +429,11 @@ lnrealcoalpriceindex_tminus2 |  -.2630695   .0623722    -4.22   0.000     -.3906
                              |
                        _cons |  -4.380644   1.849544    -2.37   0.025    -8.163386   -.5979016
 ----------------------------------------------------------------------------------------------
+(est5 stored)
 
 . // (6)
-. reg lncoalconsumption lnrealcoalpriceindex lnrealcoalpriceindex_tminus2 lnrealgdp t i.province_encoded, vce
-> (cluster province_encoded)
+. eststo: reg lncoalconsumption lnrealcoalpriceindex lnrealcoalpriceindex_tminus2 lnrealgdp t i.province_enco
+> ded, vce(cluster province_encoded)
 
 Linear regression                               Number of obs     =        320
                                                 F(3, 29)          =          .
@@ -479,6 +484,7 @@ lnrealcoalpriceindex_tminus2 |  -.2585476   .0840451    -3.08   0.005    -.43043
                              |
                        _cons |  -4.387688    1.81433    -2.42   0.022    -8.098409   -.6769674
 ----------------------------------------------------------------------------------------------
+(est6 stored)
 
 . preserve
 
@@ -486,8 +492,8 @@ lnrealcoalpriceindex_tminus2 |  -.2585476   .0840451    -3.08   0.005    -.43043
 (155 observations deleted)
 
 .         // (7)
-.         reg lncoalconsumption lnrealcoalpriceindex lnrealcoalpriceindex_tminus2 lnrealgdp t i.province_enco
-> ded, vce(cluster province_encoded)
+.         eststo: reg lncoalconsumption lnrealcoalpriceindex lnrealcoalpriceindex_tminus2 lnrealgdp t i.provi
+> nce_encoded, vce(cluster province_encoded)
 
 Linear regression                               Number of obs     =        196
                                                 F(3, 29)          =          .
@@ -538,6 +544,7 @@ lnrealcoalpriceindex_tminus2 |  -.0721755   .1246829    -0.58   0.567    -.32718
                              |
                        _cons |  -5.891634   2.721827    -2.16   0.039    -11.45839   -.3248737
 ----------------------------------------------------------------------------------------------
+(est7 stored)
 
 . restore
 
@@ -547,8 +554,8 @@ lnrealcoalpriceindex_tminus2 |  -.0721755   .1246829    -0.58   0.567    -.32718
 (310 observations deleted)
 
 .         // (8)
-.         reg lncoalconsumption lnrealcoalpriceindex lnrealcoalpriceindex_tminus2 lnrealgdp t i.province_enco
-> ded, vce(cluster province_encoded) 
+.         eststo: reg lncoalconsumption lnrealcoalpriceindex lnrealcoalpriceindex_tminus2 lnrealgdp t i.provi
+> nce_encoded, vce(cluster province_encoded) 
 
 Linear regression                               Number of obs     =        124
                                                 F(3, 27)          =          .
@@ -597,12 +604,13 @@ lnrealcoalpriceindex_tminus2 |  -.2371129   .0817418    -2.90   0.007    -.40483
                              |
                        _cons |  -3.926073   2.230552    -1.76   0.090    -8.502787    .6506403
 ----------------------------------------------------------------------------------------------
+(est8 stored)
 
 . restore
 
 . // (9)
-. reg lncoalconsumption lnrealcoalpriceindex c.lnrealcoalpriceindex#c.t lnrealcoalpriceindex_tminus2 c.lnreal
-> coalpriceindex_tminus2#c.t lnrealgdp t i.province_encoded, vce(cluster province_encoded)
+. eststo: reg lncoalconsumption lnrealcoalpriceindex c.lnrealcoalpriceindex#c.t lnrealcoalpriceindex_tminus2 
+> c.lnrealcoalpriceindex_tminus2#c.t lnrealgdp t i.province_encoded, vce(cluster province_encoded)
 
 Linear regression                               Number of obs     =        320
                                                 F(5, 29)          =          .
@@ -659,6 +667,31 @@ c.lnrealcoalpriceindex_tminus2#c.t |  -.0243048   .0170699    -1.42   0.165    -
                                    |
                              _cons |  -5.068603   1.817226    -2.79   0.009    -8.785247   -1.351959
 ----------------------------------------------------------------------------------------------------
+(est9 stored)
+
+. 
+. lab var lncoalconsumption "Ln Coal consumption_{p,t}"
+
+. lab var lnrealcoalpriceindex "Ln Real coal price index_{p,t}"
+
+. lab var t "Time trend_t"
+
+. lab var lnrealcoalpriceindex_tminus1 "Ln Real coal price index_{p,t-1}"
+
+. lab var lnrealcoalpriceindex_tminus2 "Ln Real coal price index_{p,t-2}"
+
+. lab var lnrealgdp "Ln GDP_{p,t}"
+
+. 
+. *Save regression output to LaTeX table
+. esttab using "${cdir}output/replication_table2.tex", se(%10.4f) r2 ar2 star(* 0.10 ** 0.05 *** 0.01) replac
+> e booktabs ///
+> mtitles("(1)" "(2)" "(3)" "(4)" "(5)" "(6)" "(7)" "(8)" "(9)") label nonumbers indicate("Province fixed eff
+> ects=*.province_encoded")
+(output written to /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECO
+> N 21110/FINAL PROJECT/econ-21110-winter-2023/output/replication_table2.tex)
+
+. eststo clear
 
 . 
 . log close
@@ -666,5 +699,5 @@ c.lnrealcoalpriceindex_tminus2#c.t |  -.0243048   .0170699    -1.42   0.165    -
        log:  /Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 2111
 > 0/FINAL PROJECT/econ-21110-winter-2023/code/replication.log
   log type:  text
- closed on:  19 Feb 2023, 21:50:08
+ closed on:  24 Feb 2023, 02:07:41
 -------------------------------------------------------------------------------------------------------------

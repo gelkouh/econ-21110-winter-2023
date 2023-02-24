@@ -2,6 +2,8 @@ cap log close
 set more off
 clear all
 
+set scheme cleanplots
+
 *set project directory
 global cdir "/Users/gelkouh/Library/CloudStorage/OneDrive-Personal/Documents/School/UChicago/Year 4/ECON 21110/FINAL PROJECT/econ-21110-winter-2023/"
 global ddir "/Users/gelkouh/Google Drive (UChicago)/Classes/ECON 21110/data/"
@@ -10,152 +12,120 @@ global ddir "/Users/gelkouh/Google Drive (UChicago)/Classes/ECON 21110/data/"
 log using "${cdir}code/extension_regression_analysis.log", replace
 
 ********************************************************************************************************
+* Extension figures and summary statistics             
+********************************************************************************************************
+
+import delimited "${ddir}cleaned/contracts_cleaned.csv", clear
+desc
+
+drop if year < 2002 | year > 2021
+keep if contract_type == "Contract"
+sort year
+
+* Figure 4 analog 
+preserve 
+
+collapse (mean) price_per_ton ppi_coalmining, by(year)
+
+// Normalize to 2002 = 1
+gen price_per_ton_2002	= price_per_ton[1]
+gen ppi_coalmining_2002	= ppi_coalmining[1]
+
+gen coalpriceindex_fig	= price_per_ton / price_per_ton_2002
+gen ppi_fig				= ppi_coalmining / ppi_coalmining_2002
+
+twoway (line coalpriceindex_fig year, lc(blue) lw(medthick)) ///
+       (line ppi_fig year, lc(red) lw(medthick)), ///
+       xlabel(2002(2)2022) xtitle("Year") ytitle("Index (2002 = 1)") legend(label(1 "Coal price per ton") label(2 "Industrial producer prices (coal mining)") position(6))
+graph export "${cdir}output/extension_fig4.png", replace
+	   
+restore
+
+gen t 					= year - 2002
+gen lncoalqty 			= ln(qty_coal_purch)
+gen realcoalprice		= 100*price_per_ton/ppi_coalmining
+gen lnrealcoalprice		= ln(realcoalprice)
+gen realgdp				= rgdp
+gen lnrealgdp			= ln(realgdp)
+gen t_x_lnrealcoalprice	= t*lnrealcoalprice
+encode power_plant, gen(power_plant_encoded)
+encode state, gen(state_encoded)
+replace seam_height_in = "" if seam_height_in == "NA"
+destring seam_height_in, replace 
+ 
+lab var lncoalqty "Ln Coal contract quantity (tons)"
+lab var lnrealcoalprice "Ln Real contract coal price per ton"
+lab var t "Time trend"
+lab var lnrealgdp "Ln GDP"
+lab var seam_height_in "Coal seam height (in.)"
+
+* Summary statistics 
+eststo: quietly estpost summarize ///
+    lncoalqty lnrealcoalprice t lnrealgdp seam_height_in
+
+esttab using "${cdir}output/extension_summary_stats.tex", replace ///
+cells("mean() sd() min() max() count()") ///
+label nonumbers
+eststo clear
+
+********************************************************************************************************
 * Extension regression analysis             
 ********************************************************************************************************
+
+********************************************************************************************************
+* OLS
+********************************************************************************************************
+
+// (1)
+eststo: reg lncoalqty lnrealcoalprice lnrealgdp t i.power_plant_encoded, vce(cluster power_plant_encoded)
+preserve
+	keep if year >= 2002 & year <= 2010
+	// (2)
+	eststo: reg lncoalqty lnrealcoalprice lnrealgdp t i.power_plant_encoded, vce(cluster power_plant_encoded)
+restore
+preserve
+	keep if year >= 2011 & year <= 2021
+	// (3)
+	eststo: reg lncoalqty lnrealcoalprice lnrealgdp t i.power_plant_encoded, vce(cluster power_plant_encoded) 
+restore
+// (4)
+eststo: reg lncoalqty c.lnrealcoalprice##c.t lnrealgdp i.power_plant_encoded, vce(cluster power_plant_encoded)
+
+lab var lncoalqty "Ln Coal qty (tons)"
+lab var lnrealcoalprice "Ln Real coal price per ton"
+lab var t "Time trend"
+lab var lnrealgdp "Ln GDP"
+
+*Save regression output to LaTeX table
+esttab using "${cdir}output/extension_lineartime_ols.tex", se(%10.4f) r2 ar2 star(* 0.10 ** 0.05 *** 0.01) replace booktabs ///
+mtitles("(1)" "(2)" "(3)" "(4)") label nonumbers indicate("Power plant fixed effects=*.power_plant_encoded")
+eststo clear
 
 ********************************************************************************************************
 * IV
 ********************************************************************************************************
 
-import delimited "${ddir}cleaned/capiq_cleaned.csv", clear
-replace seam_height_in = "" if seam_height_in == "NA"
-encode seam_height_in, gen(seam_height_in2)
-drop seam_height_in
-rename seam_height_in2 seam_height_in
-
-egen plant_mine_cluster=group(power_plant key_mine_id)
-egen fuel_contract_type_group=group(fuel_contract_type)
-reg ln_price_per_ton seam_height_in
-ivregress 2sls ln_qty_coal_purch i.fuel_contract_type_group i.dlvy_yr (ln_price_per_ton = seam_height_in)
-ivregress 2sls ln_qty_coal_purch i.fuel_contract_type_group i.dlvy_yr (ln_price_per_ton = seam_height_in), robust first
-ivregress 2sls ln_qty_coal_purch i.fuel_contract_type_group (ln_price_per_ton = seam_height_in), cluster(plant_mine_cluster) first
-
-reg ln_price_per_ton seam_height_in
-local firststageFstat = e(F)
-local nobs = e(N)
-
-*twoway (lpolyci ln_price_per_ton seam_height_in)
-*twoway (lpolyci ln_price_per_ton seam_height_in) (scatter ln_price_per_ton seam_height_in) (lfit ln_price_per_ton seam_height_in)
-
-local nbins = 44
-binscatter ln_price_per_ton seam_height_in, nq(`nbins') ///
-        ytitle("Price per ton (log)", size(large)) xtitle("Coal seam height (inches)", size(large))  ///
-        note("Binscatter: `nobs' contracts in `nbins' bins" "First-stage F-statistic: `firststageFstat'", size(large))
-
-preserve
-* Trimming top and bottom 1 percent of observations
-summarize ln_price_per_ton, detail
-drop if ln_price_per_ton<r(p1) | ln_price_per_ton>r(p99)
-summarize seam_height_in, detail
-drop if seam_height_in<r(p1) | seam_height_in>r(p99)
-
-reg ln_price_per_ton seam_height_in
-local firststageFstat = e(F)
-local nobs = e(N)
-local nbins = 44
-binscatter ln_price_per_ton seam_height_in, nq(`nbins') ///
-	ytitle("Price per ton (log)", size(large)) xtitle("Coal seam height (inches)", size(large))  ///
-	note("Binscatter: `nobs' contracts in `nbins' bins" "First-stage F-statistic: `firststageFstat'", size(large))
-graph export "${cdir}output/seam_height_firststage.png", replace
-restore
-
-forvalues i = 2003(5)2019 {
-	
-	local lower_year = `i' - 2
-	local upper_year = `i' + 2
-	
-	preserve
-	
-	keep if dlvy_yr >= `lower_year' & dlvy_yr <= `upper_year'
-	
-	summarize ln_price_per_ton, detail
-	drop if ln_price_per_ton<r(p1) | ln_price_per_ton>r(p99)
-	summarize seam_height_in, detail
-	drop if seam_height_in<r(p1) | seam_height_in>r(p99)
-
-	reg ln_price_per_ton seam_height_in
+* First stage regressions
+reg lnrealcoalprice c.t##c.seam_height_in lnrealgdp, robust
 	local firststageFstat = e(F)
 	local nobs = e(N)
 	local nbins = 44
-	binscatter ln_price_per_ton seam_height_in, nq(`nbins') ///
-		ytitle("Price per ton (log)", size(large)) xtitle("Coal seam height (inches)", size(large))  ///
-		note("Binscatter, `lower_year'-`upper_year': `nobs' contracts in `nbins' bins" "First-stage F-statistic: `firststageFstat'", size(large))
-	graph export "${cdir}output/seam_height_firststage_`lower_year'_`upper_year'.png", replace
-	
-	restore
-	
-}
+	binscatter lnrealcoalprice seam_height_in, controls(c.t#c.seam_height_in t lnrealgdp) nq(`nbins') ///
+		ytitle("Ln Real contract coal price per ton", size(small)) xtitle("Coal seam height (in.)", size(small))  ///
+		note("Binscatter, 2002-2021: `nobs' contracts in `nbins' bins" "First-stage F-statistic: `firststageFstat'", size(small)) 
+	graph export "${cdir}output/seam_height_firststage_1.png", replace
 
-forvalues i = 2002(1)2021 {
-	
-	preserve
-	
-	keep if dlvy_yr == `i'
-	
-	ivregress 2sls ln_qty_coal_purch i.fuel_contract_type_group (ln_price_per_ton = seam_height_in), robust first
-	
-	summarize ln_price_per_ton, detail
-	drop if ln_price_per_ton<r(p1) | ln_price_per_ton>r(p99)
-	summarize seam_height_in, detail
-	drop if seam_height_in<r(p1) | seam_height_in>r(p99)
 
-	reg ln_price_per_ton seam_height_in
+reg t_x_lnrealcoalprice c.t##c.seam_height_in lnrealgdp, robust
 	local firststageFstat = e(F)
 	local nobs = e(N)
 	local nbins = 44
-	binscatter ln_price_per_ton seam_height_in, nq(`nbins') ///
-		ytitle("Price per ton (log)", size(large)) xtitle("Coal seam height (inches)", size(large))  ///
-		note("Binscatter, `i': `nobs' contracts in `nbins' bins" "First-stage F-statistic: `firststageFstat'", size(large))
-	graph export "${cdir}output/seam_height_firststage_`i'.png", replace
+	binscatter t_x_lnrealcoalprice seam_height_in, controls(c.t#c.seam_height_in t lnrealgdp) nq(`nbins') ///
+		ytitle("t x Ln Real contract coal price per ton", size(small)) xtitle("Coal seam height (in.)", size(small))  ///
+		note("Binscatter, 2002-2021: `nobs' contracts in `nbins' bins" "First-stage F-statistic: `firststageFstat'", size(small)) 
+	graph export "${cdir}output/seam_height_firststage_2.png", replace
 	
-	restore
-	
-}
-
-	
-	preserve
-	
-	keep if dlvy_yr >= 2000 & dlvy_yr <= 2010
-	
-	ivregress 2sls ln_qty_coal_purch i.fuel_contract_type_group (ln_price_per_ton = seam_height_in), robust first
-	
-	summarize ln_price_per_ton, detail
-	drop if ln_price_per_ton<r(p1) | ln_price_per_ton>r(p99)
-	summarize seam_height_in, detail
-	drop if seam_height_in<r(p1) | seam_height_in>r(p99)
-
-	reg ln_price_per_ton seam_height_in
-	local firststageFstat = e(F)
-	local nobs = e(N)
-	local nbins = 44
-	binscatter ln_price_per_ton seam_height_in, nq(`nbins') ///
-		ytitle("Price per ton (log)", size(large)) xtitle("Coal seam height (inches)", size(large))  ///
-		note("Binscatter, 2002-2010: `nobs' contracts in `nbins' bins" "First-stage F-statistic: `firststageFstat'", size(large))
-	graph export "${cdir}output/seam_height_firststage_2002_2010.png", replace
-	
-	restore
-	preserve
-	
-	keep if dlvy_yr > 2010
-	
-	ivregress 2sls ln_qty_coal_purch i.fuel_contract_type_group (ln_price_per_ton = seam_height_in), robust first
-	
-	summarize ln_price_per_ton, detail
-	drop if ln_price_per_ton<r(p1) | ln_price_per_ton>r(p99)
-	summarize seam_height_in, detail
-	drop if seam_height_in<r(p1) | seam_height_in>r(p99)
-
-	reg ln_price_per_ton seam_height_in
-	local firststageFstat = e(F)
-	local nobs = e(N)
-	local nbins = 44
-	binscatter ln_price_per_ton seam_height_in, nq(`nbins') ///
-		ytitle("Price per ton (log)", size(large)) xtitle("Coal seam height (inches)", size(large))  ///
-		note("Binscatter, 2011-2021: `nobs' contracts in `nbins' bins" "First-stage F-statistic: `firststageFstat'", size(large))
-	graph export "${cdir}output/seam_height_firststage_2011_2021.png", replace
-	
-	restore
-	
+ivregress 2sls lncoalqty lnrealgdp t (lnrealcoalprice c.lnrealcoalprice#c.t = seam_height_in c.seam_height_in#c.t), robust first 
 
 
 log close

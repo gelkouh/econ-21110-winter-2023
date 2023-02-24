@@ -1,0 +1,31 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{4}{c}}
+\toprule
+                    &\multicolumn{1}{c}{(1)}&\multicolumn{1}{c}{(2)}&\multicolumn{1}{c}{(3)}&\multicolumn{1}{c}{(4)}\\
+\midrule
+Ln Real coal price per ton&      -0.281\sym{**} &      -0.190\sym{**} &      -0.306         &      -0.280\sym{**} \\
+                    &    (0.1254)         &    (0.0933)         &    (0.3027)         &    (0.1308)         \\
+\addlinespace
+Ln GDP\_{p,t}        &     -0.0148         &       0.765\sym{*}  &      -1.312         &     -0.0145         \\
+                    &    (0.4494)         &    (0.4610)         &    (1.1596)         &    (0.4443)         \\
+\addlinespace
+Time trend          &     0.00115         &     -0.0329\sym{***}&      0.0199         &     0.00182         \\
+                    &    (0.0090)         &    (0.0109)         &    (0.0205)         &    (0.0690)         \\
+\addlinespace
+Ln Real coal price per ton $\times$ Time trend&                     &                     &                     &   -0.000196         \\
+                    &                     &                     &                     &    (0.0195)         \\
+\addlinespace
+Constant            &       4.814         &      -5.401         &       21.36         &       4.805         \\
+                    &    (5.6320)         &    (5.7299)         &   (14.9995)         &    (5.4895)         \\
+\addlinespace
+Power plant fixed effects&         Yes         &         Yes         &         Yes         &         Yes         \\
+\midrule
+Observations        &      135315         &       92481         &       42834         &      135315         \\
+\(R^{2}\)           &       0.338         &       0.359         &       0.360         &       0.338         \\
+Adjusted \(R^{2}\)  &       0.336         &       0.357         &       0.357         &       0.336         \\
+\bottomrule
+\multicolumn{5}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{5}{l}{\footnotesize \sym{*} \(p<0.10\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\
+\end{tabular}
+}
