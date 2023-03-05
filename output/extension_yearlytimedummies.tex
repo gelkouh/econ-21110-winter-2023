@@ -1,0 +1,87 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{4}{c}}
+\toprule
+                    &\multicolumn{1}{c}{\shortstack{(1)\\OLS}}&\multicolumn{1}{c}{\shortstack{(2)\\IV}}&\multicolumn{1}{c}{\shortstack{(3)\\OLS}}&\multicolumn{1}{c}{\shortstack{(4)\\IV}}\\
+\midrule
+Ln Real coal price per ton&      -0.294\sym{**} &      -55.77         &     -0.0946         &      -8.130\sym{***}\\
+                    &    (0.1275)         &   (53.1698)         &    (0.1630)         &    (3.0357)         \\
+\addlinespace
+Ln GDP              &      0.0809         &       27.22         &     -0.0630         &       2.778\sym{***}\\
+                    &    (0.5658)         &   (27.7473)         &    (0.5658)         &    (0.6463)         \\
+\addlinespace
+Time trend=0 $\times$ Ln Real coal price per ton&                     &                     &           0         &           0         \\
+                    &                     &                     &         (.)         &         (.)         \\
+\addlinespace
+Time trend=1 $\times$ Ln Real coal price per ton&                     &                     &     -0.0819         &      -1.092         \\
+                    &                     &                     &    (0.1051)         &    (1.3147)         \\
+\addlinespace
+Time trend=2 $\times$ Ln Real coal price per ton&                     &                     &      -0.186\sym{*}  &       0.607         \\
+                    &                     &                     &    (0.1070)         &    (1.3654)         \\
+\addlinespace
+Time trend=3 $\times$ Ln Real coal price per ton&                     &                     &     -0.0542         &       3.197\sym{**} \\
+                    &                     &                     &    (0.1287)         &    (1.2517)         \\
+\addlinespace
+Time trend=4 $\times$ Ln Real coal price per ton&                     &                     &     -0.0220         &       3.388\sym{***}\\
+                    &                     &                     &    (0.1312)         &    (1.1849)         \\
+\addlinespace
+Time trend=5 $\times$ Ln Real coal price per ton&                     &                     &      -0.288\sym{**} &       4.857\sym{***}\\
+                    &                     &                     &    (0.1288)         &    (1.0323)         \\
+\addlinespace
+Time trend=6 $\times$ Ln Real coal price per ton&                     &                     &      -0.281\sym{*}  &       4.055\sym{***}\\
+                    &                     &                     &    (0.1588)         &    (1.1657)         \\
+\addlinespace
+Time trend=7 $\times$ Ln Real coal price per ton&                     &                     &      -0.344\sym{**} &       4.549\sym{***}\\
+                    &                     &                     &    (0.1424)         &    (1.7546)         \\
+\addlinespace
+Time trend=8 $\times$ Ln Real coal price per ton&                     &                     &      -0.236         &       5.272\sym{**} \\
+                    &                     &                     &    (0.1496)         &    (2.4895)         \\
+\addlinespace
+Time trend=9 $\times$ Ln Real coal price per ton&                     &                     &      -0.493\sym{***}&       6.390\sym{***}\\
+                    &                     &                     &    (0.1803)         &    (1.5522)         \\
+\addlinespace
+Time trend=10 $\times$ Ln Real coal price per ton&                     &                     &      -0.297\sym{*}  &       6.856         \\
+                    &                     &                     &    (0.1748)         &    (4.2932)         \\
+\addlinespace
+Time trend=11 $\times$ Ln Real coal price per ton&                     &                     &      -0.276         &       9.642\sym{***}\\
+                    &                     &                     &    (0.2062)         &    (1.9053)         \\
+\addlinespace
+Time trend=12 $\times$ Ln Real coal price per ton&                     &                     &     -0.0800         &       14.29         \\
+                    &                     &                     &    (0.2555)         &   (25.4793)         \\
+\addlinespace
+Time trend=13 $\times$ Ln Real coal price per ton&                     &                     &       0.214         &       5.193         \\
+                    &                     &                     &    (0.3600)         &    (4.6454)         \\
+\addlinespace
+Time trend=14 $\times$ Ln Real coal price per ton&                     &                     &       0.252         &       3.716         \\
+                    &                     &                     &    (0.3278)         &    (6.1906)         \\
+\addlinespace
+Time trend=15 $\times$ Ln Real coal price per ton&                     &                     &       0.264         &       5.159\sym{**} \\
+                    &                     &                     &    (0.2662)         &    (2.5156)         \\
+\addlinespace
+Time trend=16 $\times$ Ln Real coal price per ton&                     &                     &       0.301         &       9.092\sym{***}\\
+                    &                     &                     &    (0.3222)         &    (3.1009)         \\
+\addlinespace
+Time trend=17 $\times$ Ln Real coal price per ton&                     &                     &       0.259         &       6.586\sym{***}\\
+                    &                     &                     &    (0.4067)         &    (1.2124)         \\
+\addlinespace
+Time trend=18 $\times$ Ln Real coal price per ton&                     &                     &     0.00631         &       2.197         \\
+                    &                     &                     &    (0.4137)         &    (7.2145)         \\
+\addlinespace
+Time trend=19 $\times$ Ln Real coal price per ton&                     &                     &       0.148         &       7.522         \\
+                    &                     &                     &    (0.3888)         &   (11.9518)         \\
+\addlinespace
+Constant            &       3.756         &      -143.7         &       4.853         &      -2.101         \\
+                    &    (7.1683)         &  (163.9811)         &    (7.1262)         &    (7.7173)         \\
+\addlinespace
+Power plant fixed effects&         Yes         &         Yes         &         Yes         &         Yes         \\
+\addlinespace
+Year fixed effects  &         Yes         &         Yes         &         Yes         &         Yes         \\
+\midrule
+Observations        &      135315         &       32290         &      135315         &       32290         \\
+\(R^{2}\)           &       0.341         &           .         &       0.343         &           .         \\
+Adjusted \(R^{2}\)  &       0.339         &           .         &       0.340         &           .         \\
+\bottomrule
+\multicolumn{5}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{5}{l}{\footnotesize \sym{*} \(p<0.10\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\
+\end{tabular}
+}

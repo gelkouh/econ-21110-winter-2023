@@ -1,0 +1,39 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{4}{c}}
+\toprule
+                    &\multicolumn{1}{c}{\shortstack{(1)\\OLS}}&\multicolumn{1}{c}{\shortstack{(2)\\IV}}&\multicolumn{1}{c}{\shortstack{(3)\\OLS}}&\multicolumn{1}{c}{\shortstack{(4)\\IV}}\\
+\midrule
+Ln Real coal price per ton&      -0.266\sym{**} &      -42.07         &      -0.146         &      -5.808\sym{***}\\
+                    &    (0.1236)         &   (28.2702)         &    (0.1344)         &    (0.5802)         \\
+\addlinespace
+Ln GDP              &     -0.0635         &       10.24         &      -0.114         &       1.072\sym{***}\\
+                    &    (0.3643)         &    (7.6472)         &    (0.3654)         &    (0.2548)         \\
+\addlinespace
+Time trend=0 $\times$ Ln Real coal price per ton&                     &                     &           0         &           0         \\
+                    &                     &                     &         (.)         &         (.)         \\
+\addlinespace
+Time trend=1 $\times$ Ln Real coal price per ton&                     &                     &      -0.232\sym{**} &       2.824\sym{***}\\
+                    &                     &                     &    (0.1037)         &    (0.3818)         \\
+\addlinespace
+Time trend=2 $\times$ Ln Real coal price per ton&                     &                     &     -0.0753         &       4.716\sym{***}\\
+                    &                     &                     &    (0.2207)         &    (0.7344)         \\
+\addlinespace
+Time trend=3 $\times$ Ln Real coal price per ton&                     &                     &       0.284         &       7.909\sym{***}\\
+                    &                     &                     &    (0.3118)         &    (0.9640)         \\
+\addlinespace
+Constant            &       5.396         &       18.35         &       5.607         &       10.66\sym{***}\\
+                    &    (4.6125)         &   (12.0960)         &    (4.5178)         &    (2.4404)         \\
+\addlinespace
+Power plant fixed effects&         Yes         &         Yes         &         Yes         &         Yes         \\
+\addlinespace
+Year fixed effects  &         Yes         &         Yes         &         Yes         &         Yes         \\
+\midrule
+Observations        &      135315         &       32290         &      135315         &       32290         \\
+\(R^{2}\)           &       0.339         &           .         &       0.340         &           .         \\
+Adjusted \(R^{2}\)  &       0.337         &           .         &       0.338         &           .         \\
+\bottomrule
+\multicolumn{5}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{5}{l}{\footnotesize \sym{*} \(p<0.10\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\
+\end{tabular}
+}

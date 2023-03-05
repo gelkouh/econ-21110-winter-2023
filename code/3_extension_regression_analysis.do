@@ -72,38 +72,46 @@ eststo clear
 * Extension regression analysis             
 ********************************************************************************************************
 
-********************************************************************************************************
-* OLS
-********************************************************************************************************
-
-// (1)
-eststo: reg lncoalqty lnrealcoalprice lnrealgdp t i.power_plant_encoded, vce(cluster power_plant_encoded)
-preserve
-	keep if year >= 2002 & year <= 2010
-	// (2)
-	eststo: reg lncoalqty lnrealcoalprice lnrealgdp t i.power_plant_encoded, vce(cluster power_plant_encoded)
-restore
-preserve
-	keep if year >= 2011 & year <= 2021
-	// (3)
-	eststo: reg lncoalqty lnrealcoalprice lnrealgdp t i.power_plant_encoded, vce(cluster power_plant_encoded) 
-restore
-// (4)
-eststo: reg lncoalqty c.lnrealcoalprice##c.t lnrealgdp i.power_plant_encoded, vce(cluster power_plant_encoded)
-
 lab var lncoalqty "Ln Coal qty (tons)"
 lab var lnrealcoalprice "Ln Real coal price per ton"
 lab var t "Time trend"
 lab var lnrealgdp "Ln GDP"
 
-*Save regression output to LaTeX table
-esttab using "${cdir}output/extension_lineartime_ols.tex", se(%10.4f) r2 ar2 star(* 0.10 ** 0.05 *** 0.01) replace booktabs ///
-mtitles("(1)" "(2)" "(3)" "(4)") label nonumbers indicate("Power plant fixed effects=*.power_plant_encoded")
-eststo clear
+********************************************************************************************************
+* OLS and IV (linear time trend)
+********************************************************************************************************
 
-********************************************************************************************************
-* IV
-********************************************************************************************************
+// (1)
+eststo: reg lncoalqty lnrealcoalprice lnrealgdp t i.power_plant_encoded, vce(cluster power_plant_encoded)
+// (2)
+eststo: ivregress 2sls lncoalqty lnrealgdp t i.power_plant_encoded (lnrealcoalprice = seam_height_in), robust first 
+estat endogenous
+preserve
+	keep if year >= 2002 & year <= 2010
+	// (3)
+	eststo: reg lncoalqty lnrealcoalprice lnrealgdp t i.power_plant_encoded, vce(cluster power_plant_encoded)
+	// (4)
+	eststo: ivregress 2sls lncoalqty lnrealgdp t i.power_plant_encoded (lnrealcoalprice = seam_height_in), robust first 
+	estat endogenous
+restore
+preserve
+	keep if year >= 2011 & year <= 2021
+	// (5)
+	eststo: reg lncoalqty lnrealcoalprice lnrealgdp t i.power_plant_encoded, vce(cluster power_plant_encoded) 
+	// (6)
+	eststo: ivregress 2sls lncoalqty lnrealgdp t i.power_plant_encoded (lnrealcoalprice = seam_height_in), robust first 
+	estat endogenous
+restore
+// (7)
+eststo: reg lncoalqty c.lnrealcoalprice##c.t lnrealgdp i.power_plant_encoded, vce(cluster power_plant_encoded)
+// (8)
+eststo: ivregress 2sls lncoalqty lnrealgdp t i.power_plant_encoded (lnrealcoalprice c.lnrealcoalprice#c.t = seam_height_in c.seam_height_in#c.t), robust first
+estat endogenous
+
+*Save regression output to LaTeX table
+esttab using "${cdir}output/extension_lineartime.tex", se(%10.4f) r2 ar2 star(* 0.10 ** 0.05 *** 0.01) replace booktabs ///
+mtitles("\shortstack{(1)\\OLS, Full}" "\shortstack{(2)\\IV, Full}" "\shortstack{(3)\\OLS, Early}" "\shortstack{(4)\\IV, Early}" "\shortstack{(5)\\OLS, Late}" "\shortstack{(6)\\IV, Late}" "\shortstack{(7)\\OLS, Full}" "\shortstack{(8)\\IV, Full}") label nonumbers indicate("Power plant fixed effects=*.power_plant_encoded")
+eststo clear
 
 * First stage regressions
 reg lnrealcoalprice c.t##c.seam_height_in lnrealgdp, robust
@@ -115,7 +123,6 @@ reg lnrealcoalprice c.t##c.seam_height_in lnrealgdp, robust
 		note("Binscatter, 2002-2021: `nobs' contracts in `nbins' bins" "First-stage F-statistic: `firststageFstat'", size(small)) 
 	graph export "${cdir}output/seam_height_firststage_1.png", replace
 
-
 reg t_x_lnrealcoalprice c.t##c.seam_height_in lnrealgdp, robust
 	local firststageFstat = e(F)
 	local nobs = e(N)
@@ -124,8 +131,53 @@ reg t_x_lnrealcoalprice c.t##c.seam_height_in lnrealgdp, robust
 		ytitle("t x Ln Real contract coal price per ton", size(small)) xtitle("Coal seam height (in.)", size(small))  ///
 		note("Binscatter, 2002-2021: `nobs' contracts in `nbins' bins" "First-stage F-statistic: `firststageFstat'", size(small)) 
 	graph export "${cdir}output/seam_height_firststage_2.png", replace
-	
-ivregress 2sls lncoalqty lnrealgdp t (lnrealcoalprice c.lnrealcoalprice#c.t = seam_height_in c.seam_height_in#c.t), robust first 
+	********************************************************************************************************
+* OLS and IV (yearly time dummies)
+********************************************************************************************************
 
+// (1)
+eststo: reg lncoalqty lnrealcoalprice lnrealgdp i.t i.power_plant_encoded, vce(cluster power_plant_encoded)
+// (2)
+eststo: ivregress 2sls lncoalqty lnrealgdp i.t i.power_plant_encoded (lnrealcoalprice = seam_height_in), robust first 
+estat endogenous
+// (3)
+eststo: reg lncoalqty c.lnrealcoalprice##i.t lnrealgdp i.power_plant_encoded, vce(cluster power_plant_encoded)
+// (4)
+eststo: ivregress 2sls lncoalqty lnrealgdp i.t i.power_plant_encoded (lnrealcoalprice i.t#c.lnrealcoalprice = seam_height_in i.t#c.seam_height_in), robust first
+estat endogenous
+
+*Save regression output to LaTeX table
+esttab using "${cdir}output/extension_yearlytimedummies.tex", se(%10.4f) r2 ar2 star(* 0.10 ** 0.05 *** 0.01) replace booktabs ///
+mtitles("\shortstack{(1)\\OLS}" "\shortstack{(2)\\IV}" "\shortstack{(3)\\OLS}" "\shortstack{(4)\\IV}") label nonumbers indicate("Power plant fixed effects=*.power_plant_encoded" "Year fixed effects=*.t")
+eststo clear
+
+********************************************************************************************************
+* OLS and IV (5-year time dummies)
+********************************************************************************************************
+
+preserve 
+
+replace t = 0 if year <= 2006
+replace t = 1 if year >= 2007 & year <= 2011
+replace t = 2 if year >= 2012 & year <= 2016
+replace t = 3 if year >= 2017 & year <= 2021
+
+// (1)
+eststo: reg lncoalqty lnrealcoalprice lnrealgdp i.t i.power_plant_encoded, vce(cluster power_plant_encoded)
+// (2)
+eststo: ivregress 2sls lncoalqty lnrealgdp i.t i.power_plant_encoded (lnrealcoalprice = seam_height_in), robust first 
+estat endogenous
+// (3)
+eststo: reg lncoalqty c.lnrealcoalprice##i.t lnrealgdp i.power_plant_encoded, vce(cluster power_plant_encoded)
+// (4)
+eststo: ivregress 2sls lncoalqty lnrealgdp i.t i.power_plant_encoded (lnrealcoalprice i.t#c.lnrealcoalprice = seam_height_in i.t#c.seam_height_in), robust first
+estat endogenous
+
+*Save regression output to LaTeX table
+esttab using "${cdir}output/extension_5yeartimedummies.tex", se(%10.4f) r2 ar2 star(* 0.10 ** 0.05 *** 0.01) replace booktabs ///
+mtitles("\shortstack{(1)\\OLS}" "\shortstack{(2)\\IV}" "\shortstack{(3)\\OLS}" "\shortstack{(4)\\IV}") label nonumbers indicate("Power plant fixed effects=*.power_plant_encoded" "Year fixed effects=*.t")
+eststo clear
+
+restore
 
 log close
